@@ -1,0 +1,2376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Controls Whiteboard</title>
+    <meta
+      name="description"
+      content="A minimalist, high data-ink ratio whiteboard customized for project managers and controllers. Sketch S-curves, brainstorm risks, and schedule timelines."
+    />
+    <meta name="theme-color" content="#1e293b" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Screen reader live descriptions -->
+    <div id="a11y-live-announcer" class="sr-only" aria-live="polite">
+      Whiteboard initialized. Vertical Swimlanes template active.
+    </div>
+
+    <main class="app-container">
+      <!-- Sidebar Controls -->
+      <aside class="sidebar" role="toolbar" aria-label="Whiteboard controls">
+        <div class="sidebar-header">
+          <h1>Project Canvas</h1>
+          <span class="subtitle">Whiteboard v1.0</span>
+        </div>
+
+        <!-- Drawing Tools -->
+        <section class="tool-section">
+          <h2>Drawing Tools</h2>
+          <div class="tool-grid">
+            <button
+              id="tool-select"
+              class="tool-btn active"
+              title="Select & Move elements (S)"
+              aria-label="Select tool"
+              data-tooltip-title="Select & Move Tool"
+              data-tooltip-desc="Select, move, and edit shapes or canvas elements"
+              data-tooltip-shortcut="S"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                <path d="M13 13l6 6" />
+              </svg>
+            </button>
+            <button
+              id="tool-pen"
+              class="tool-btn"
+              title="Pen (P)"
+              aria-label="Pen tool"
+              data-tooltip-title="Pen Tool"
+              data-tooltip-desc="Freehand sketch and annotate directly on the whiteboard"
+              data-tooltip-shortcut="P"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+            </button>
+            <button
+              id="tool-highlighter"
+              class="tool-btn"
+              title="Highlighter (H)"
+              aria-label="Highlighter tool"
+              data-tooltip-title="Highlighter Tool"
+              data-tooltip-desc="Translucent marker for highlighting paths, areas, or notes"
+              data-tooltip-shortcut="H"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L13 14l-4 1 1-4Z" />
+                <path d="m14 8 3 3" />
+                <path d="M9 11 5 15v4h4l4-4" />
+              </svg>
+            </button>
+            <button
+              id="tool-eraser"
+              class="tool-btn"
+              title="Eraser (E)"
+              aria-label="Eraser tool"
+              data-tooltip-title="Eraser Tool"
+              data-tooltip-desc="Erase individual strokes or lines under your cursor"
+              data-tooltip-shortcut="E"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path
+                  d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21Z"
+                />
+                <path d="m22 21-10-10" />
+              </svg>
+            </button>
+            <button
+              id="tool-area-eraser"
+              class="tool-btn"
+              title="Area Eraser"
+              aria-label="Area Eraser tool"
+              data-tooltip-title="Area Eraser Tool"
+              data-tooltip-desc="Drag a selection box to erase multiple strokes and notes"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-dasharray="2 2"
+                stroke-width="2"
+                fill="none"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <line x1="8" y1="8" x2="16" y2="16" />
+                <line x1="16" y1="8" x2="8" y2="16" />
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- Palette -->
+        <section class="tool-section">
+          <h2>Color Palette</h2>
+          <div class="color-grid">
+            <button
+              class="color-btn active"
+              data-color="#1e293b"
+              style="background-color: #1e293b"
+              title="Slate (Default Text/Lines)"
+              data-tooltip-title="Slate Color"
+              data-tooltip-desc="Default text, outlines, and general project deliverables"
+              data-tooltip-pos="right"
+            ></button>
+            <button
+              class="color-btn"
+              data-color="#2563eb"
+              style="background-color: #2563eb"
+              title="Muted Blue (Planned/Baseline)"
+              data-tooltip-title="Muted Blue Color"
+              data-tooltip-desc="Planned baseline scope, engineering packages, and milestones"
+              data-tooltip-pos="right"
+            ></button>
+            <button
+              class="color-btn"
+              data-color="#16a34a"
+              style="background-color: #16a34a"
+              title="Muted Green (Actuals/Earned)"
+              data-tooltip-title="Muted Green Color"
+              data-tooltip-desc="Actuals, completed tasks, and favorable cost/schedule progress"
+              data-tooltip-pos="right"
+            ></button>
+            <button
+              class="color-btn"
+              data-color="#dc2626"
+              style="background-color: #dc2626"
+              title="Red (Variance/High Risk)"
+              data-tooltip-title="Red Alert Color"
+              data-tooltip-desc="High project risk (score ≥ 15), critical path, and cost variances"
+              data-tooltip-pos="right"
+            ></button>
+            <button
+              class="color-btn"
+              data-color="#eab308"
+              style="background-color: #eab308"
+              title="Yellow (Medium Risk/Note)"
+              data-tooltip-title="Yellow Warning Color"
+              data-tooltip-desc="Medium risk (score ≥ 8), advisory notes, and tasks under review"
+              data-tooltip-pos="right"
+            ></button>
+          </div>
+        </section>
+
+        <!-- Line Width -->
+        <section class="tool-section">
+          <h2>Stroke Width</h2>
+          <div
+            class="stroke-selector"
+            data-tooltip-title="Drawing Stroke Width"
+            data-tooltip-desc="Adjust line thickness for drawing and shape borders (2px–20px)"
+            data-tooltip-pos="right"
+          >
+            <input
+              type="range"
+              id="stroke-width"
+              min="2"
+              max="20"
+              value="4"
+              aria-label="Stroke width slider"
+              title="Adjust drawing stroke width"
+            />
+            <span id="stroke-value">4px</span>
+          </div>
+        </section>
+
+        <!-- Shape & Annotations -->
+        <section class="tool-section">
+          <h2>Shapes & Sticky Notes</h2>
+          <div class="tool-grid">
+            <button
+              id="tool-line"
+              class="tool-btn"
+              title="Line (L)"
+              aria-label="Line tool"
+              data-tooltip-title="Line Tool"
+              data-tooltip-desc="Draw straight connector and alignment lines"
+              data-tooltip-shortcut="L"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <line x1="5" y1="19" x2="19" y2="5" />
+              </svg>
+            </button>
+            <button
+              id="tool-rect"
+              class="tool-btn"
+              title="Rectangle (R)"
+              aria-label="Rectangle tool"
+              data-tooltip-title="Rectangle Shape"
+              data-tooltip-desc="Draw boxes. Double-click to add inline milestone text"
+              data-tooltip-shortcut="R"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+              </svg>
+            </button>
+            <button
+              id="tool-circle"
+              class="tool-btn"
+              title="Circle (C)"
+              aria-label="Circle tool"
+              data-tooltip-title="Circle Shape"
+              data-tooltip-desc="Draw circles or ellipses. Double-click to add inline text"
+              data-tooltip-shortcut="C"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <circle cx="12" cy="12" r="10" />
+              </svg>
+            </button>
+            <button
+              id="tool-arrow"
+              class="tool-btn"
+              title="Arrow (A)"
+              aria-label="Arrow tool"
+              data-tooltip-title="Arrow Shape"
+              data-tooltip-desc="Draw directional workflow arrows and process flows"
+              data-tooltip-shortcut="A"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <line x1="5" y1="19" x2="19" y2="5" />
+                <polyline points="12 5 19 5 19 12" />
+              </svg>
+            </button>
+            <button
+              id="tool-diamond"
+              class="tool-btn"
+              title="Diamond (D)"
+              aria-label="Diamond tool"
+              data-tooltip-title="Diamond Milestone"
+              data-tooltip-desc="Draw decision gates, stage gates, or key project milestones"
+              data-tooltip-shortcut="D"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <polygon points="12 2 22 12 12 22 2 12" />
+              </svg>
+            </button>
+            <button
+              id="tool-triangle"
+              class="tool-btn"
+              title="Triangle (T)"
+              aria-label="Triangle tool"
+              data-tooltip-title="Triangle Marker"
+              data-tooltip-desc="Draw variance flags, warning deltas, or milestone markers"
+              data-tooltip-shortcut="T"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <polygon points="12 3 22 21 2 21" />
+              </svg>
+            </button>
+            <button
+              id="tool-sticky"
+              class="tool-btn"
+              title="Add Sticky Note (N)"
+              aria-label="Sticky Note tool"
+              data-tooltip-title="Add Sticky Note"
+              data-tooltip-desc="Place a parametric WBS sticky note. Drag with Shift to link tasks"
+              data-tooltip-shortcut="N"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                />
+                <path d="M14 2v6h6" />
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- Actions (Undo/Redo) -->
+        <section class="tool-section">
+          <h2>Actions</h2>
+          <div class="tool-grid" style="grid-template-columns: repeat(2, 1fr)">
+            <button
+              id="sidebar-undo"
+              class="tool-btn"
+              title="Undo (Ctrl+Z)"
+              aria-label="Undo action"
+              data-tooltip-title="Undo Canvas Action"
+              data-tooltip-desc="Revert last stroke, note placement, or edit"
+              data-tooltip-shortcut="Ctrl+Z"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M3 7v6h6" />
+                <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+              </svg>
+              <span
+                style="font-size: 0.7rem; margin-left: 4px; font-weight: 500"
+                >Undo</span
+              >
+            </button>
+            <button
+              id="sidebar-redo"
+              class="tool-btn"
+              title="Redo (Ctrl+Y)"
+              aria-label="Redo action"
+              data-tooltip-title="Redo Canvas Action"
+              data-tooltip-desc="Re-apply previously undone action"
+              data-tooltip-shortcut="Ctrl+Y"
+              data-tooltip-pos="right"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M21 7v6h-6" />
+                <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+              </svg>
+              <span
+                style="font-size: 0.7rem; margin-left: 4px; font-weight: 500"
+                >Redo</span
+              >
+            </button>
+          </div>
+        </section>
+
+        <!-- Canvas Background Templates -->
+        <section class="tool-section">
+          <h2>Templates</h2>
+          <div class="template-list">
+            <button
+              id="tpl-blank"
+              class="template-btn"
+              title="Blank grid canvas"
+              data-tooltip-title="Blank Grid"
+              data-tooltip-desc="Standard clean canvas with subtle alignment grid"
+              data-tooltip-pos="right"
+            >
+              Blank Grid
+            </button>
+            <button
+              id="tpl-swimlane"
+              class="template-btn active"
+              title="Vertical Swimlanes background layout on the canvas"
+              data-tooltip-title="Vertical Swimlanes Template"
+              data-tooltip-desc="Multi-column vertical swimlane discipline partition on whiteboard"
+              data-tooltip-pos="right"
+            >
+              Vertical Swimlanes
+            </button>
+            <button
+              id="tpl-scurve"
+              class="template-btn"
+              title="S-Curve (Cost/Progress) template"
+              data-tooltip-title="S-Curve Template"
+              data-tooltip-desc="Cumulative cost and progress axes for milestone sketching"
+              data-tooltip-pos="right"
+            >
+              S-Curve (EVM)
+            </button>
+            <button
+              id="tpl-matrix"
+              class="template-btn"
+              title="5x5 Risk Matrix template"
+              data-tooltip-title="5×5 Risk Matrix Template"
+              data-tooltip-desc="5×5 Probability × Impact assessment grid"
+              data-tooltip-pos="right"
+            >
+              5×5 Risk Matrix
+            </button>
+            <button
+              id="tpl-gantt"
+              class="template-btn"
+              title="Gantt schedule timeline template"
+              data-tooltip-title="Gantt Timeline Template"
+              data-tooltip-desc="Quarterly phased schedule grid layout"
+              data-tooltip-pos="right"
+            >
+              Gantt Schedule
+            </button>
+          </div>
+        </section>
+
+        <!-- Swimlanes / Roles Monitor & Typo Manager -->
+        <section class="tool-section sidebar-roles-section" id="sidebar-roles-section">
+          <div class="sidebar-section-header">
+            <h2>Swimlanes / Roles</h2>
+            <span id="sidebar-roles-count" class="sidebar-section-badge" title="Unique active disciplines/roles">0</span>
+          </div>
+          <div id="sidebar-roles-list" class="sidebar-roles-list">
+            <div class="sidebar-roles-empty">No roles yet</div>
+          </div>
+        </section>
+
+        <!-- User Guide & Workflow Overview (Click to open User Guide) -->
+        <section
+          id="sidebar-workflow-card"
+          class="tool-section sidebar-workflow-section"
+          onclick="openUserGuide()"
+          role="button"
+          tabindex="0"
+          title="Open User Guide & Workflow Tutorial (Hotkey: ?)"
+          aria-label="User Guide & Workflow Tutorial"
+          data-tooltip-title="User Guide & Workflow Tutorial"
+          data-tooltip-desc="Open 4-step workflow guide, shortcuts table, and project controlling formulas"
+          data-tooltip-shortcut="?"
+          data-tooltip-pos="right"
+        >
+          <h2>User Guide</h2>
+          <div class="sidebar-workflow-card">
+            <img
+              src="assets/Whiteboard App.png"
+              alt="Brainstorm to Gantt Workflow Diagram"
+              class="sidebar-workflow-img"
+              loading="lazy"
+            />
+            <div class="sidebar-workflow-caption">
+              <span>📖 Open Guide</span>
+              <svg
+                viewBox="0 0 24 24"
+                width="10"
+                height="10"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- Utility Options -->
+        <section class="tool-section utility-section">
+          <button
+            id="btn-grid-toggle"
+            class="utility-btn text-btn"
+            title="Show or hide the canvas grid lines"
+            data-tooltip-title="Toggle Grid Lines"
+            data-tooltip-desc="Show or hide subtle background alignment grid on the board"
+            data-tooltip-pos="right"
+          >
+            Toggle Grid Lines
+          </button>
+          <button
+            id="btn-clear"
+            class="utility-btn text-btn warning"
+            title="Remove all drawings and sticky notes from the canvas"
+            data-tooltip-title="Clear Entire Canvas"
+            data-tooltip-desc="Permanently wipe all strokes, shapes, and notes from the board"
+            data-tooltip-pos="right"
+          >
+            Clear Canvas
+          </button>
+        </section>
+      </aside>
+
+      <!-- Canvas Area -->
+      <div class="canvas-area-wrapper">
+        <!-- Toolbar helper / Quick settings overlay -->
+        <div class="top-bar">
+          <div class="navigation-info">
+            Active Template: <span id="current-template-name">Vertical Swimlanes</span>
+          </div>
+
+          <div class="brainstorm-container">
+            <input
+              type="text"
+              id="brainstorm-input"
+              placeholder="Write task & Enter"
+              aria-label="Brainstorm task input"
+              title="Type a task and press Enter to create a sticky note"
+              data-tooltip-title="Quick-Entry Brainstorm Bar"
+              data-tooltip-desc="Type task title and press Enter to instantly drop a sticky note"
+              data-tooltip-shortcut="Enter"
+              data-tooltip-pos="bottom"
+            />
+          </div>
+
+          <div class="view-switcher-tabs" role="tablist">
+            <button
+              id="btn-tab-canvas"
+              class="view-tab-btn active"
+              role="tab"
+              aria-selected="true"
+              aria-controls="whiteboardCanvas"
+              tabindex="0"
+              title="Switch to the freeform whiteboard"
+              data-tooltip-title="Board Canvas View"
+              data-tooltip-desc="Freeform sketching, parametric sticky notes, and Shift-drag linking"
+              data-tooltip-pos="bottom"
+            >
+              🎨 Board
+            </button>
+            <button
+              id="btn-tab-swimlane"
+              class="view-tab-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="swimlane-view-pane"
+              tabindex="-1"
+              title="View tasks organized by swimlane or role"
+              data-tooltip-title="Swimlanes View"
+              data-tooltip-desc="Group tasks by role/discipline and auto-arrange sequential board layout"
+              data-tooltip-pos="bottom"
+            >
+              🏊 Swimlanes
+            </button>
+            <button
+              id="btn-tab-gantt"
+              class="view-tab-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="gantt-view-pane"
+              tabindex="-1"
+              title="View the project schedule as a Gantt chart"
+              data-tooltip-title="Gantt & WBS Schedule"
+              data-tooltip-desc="CPM schedule calculation, 12-column table, and interactive visual timeline"
+              data-tooltip-pos="bottom"
+            >
+              📊 Gantt
+            </button>
+            <button
+              id="btn-tab-risk"
+              class="view-tab-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="risk-view-pane"
+              tabindex="-1"
+              title="View task probability and impact in the risk matrix"
+              data-tooltip-title="5×5 Risk Matrix"
+              data-tooltip-desc="Probability × Impact severity heatmap and ranked Risk Register"
+              data-tooltip-pos="bottom"
+            >
+              ⚠️ Risk Matrix
+            </button>
+            <button
+              id="btn-tab-evm"
+              class="view-tab-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="evm-view-pane"
+              tabindex="-1"
+              title="View Earned Value Management, variances, CPI/SPI, and S-Curve"
+              data-tooltip-title="Earned Value Management (EVM)"
+              data-tooltip-desc="Track PV, EV, AC, CV, SV, CPI, SPI, EAC, and Tufte direct-labeled S-Curve"
+              data-tooltip-pos="bottom"
+            >
+              📈 EVM
+            </button>
+          </div>
+
+          <div class="project-save-controls">
+            <label for="project-name-input" class="project-name-label">
+              Project
+            </label>
+            <input
+              id="project-name-input"
+              type="text"
+              maxlength="80"
+              placeholder="Project name"
+              aria-label="Project name"
+              data-tooltip-title="Project Name"
+              data-tooltip-desc="Project identifier for local browser storage and exported filenames"
+              data-tooltip-pos="bottom"
+            />
+            <button
+              id="btn-save-project"
+              type="button"
+              class="primary-btn"
+              title="Save project"
+              aria-label="Save projected board"
+              data-tooltip-title="Save Board to JSON"
+              data-tooltip-desc="Download full board state (strokes, notes, links, and EVM actuals) to file"
+              data-tooltip-pos="bottom"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                <polyline points="17 21 17 13 7 13 7 21" />
+                <polyline points="7 3 7 8 15 8" />
+              </svg>
+              <span>Save Board</span>
+            </button>
+            <button
+              id="btn-open-project"
+              class="secondary-btn"
+              title="Open a JSON project file, such as New Garden Shed.json"
+              aria-label="Open project file"
+              data-tooltip-title="Open Project File"
+              data-tooltip-desc="Load an existing project JSON file (e.g. samples/New Garden Shed.json)"
+              data-tooltip-pos="bottom"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+              <span>Open File</span>
+            </button>
+            <button
+              id="btn-load-demo"
+              class="secondary-btn"
+              type="button"
+              title="Load demo Garden Shed project with 20 tasks, swimlanes, and Gantt schedule"
+              aria-label="Load demo project"
+              data-tooltip-title="Load Demo Project"
+              data-tooltip-desc="Load complete sample project with 20 tasks across 5 swimlanes and full Gantt schedule"
+              data-tooltip-pos="bottom"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              </svg>
+              <span>Demo Project</span>
+            </button>
+            <input
+              id="project-file-input"
+              type="file"
+              accept=".json,application/json"
+              hidden
+            />
+          </div>
+
+          <div class="history-controls">
+            <button
+              id="btn-undo"
+              title="Undo (Ctrl+Z)"
+              aria-label="Undo action"
+              data-tooltip-title="Undo"
+              data-tooltip-desc="Revert last canvas change or note modification"
+              data-tooltip-shortcut="Ctrl+Z"
+              data-tooltip-pos="bottom"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M3 7v6h6" />
+                <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+              </svg>
+            </button>
+            <button
+              id="btn-redo"
+              title="Redo (Ctrl+Y)"
+              aria-label="Redo action"
+              data-tooltip-title="Redo"
+              data-tooltip-desc="Re-apply last undone canvas change"
+              data-tooltip-shortcut="Ctrl+Y"
+              data-tooltip-pos="bottom"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M21 7v6h-6" />
+                <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+              </svg>
+            </button>
+            <button
+              id="btn-export"
+              class="primary-btn"
+              title="Export as PNG"
+              aria-label="Export board"
+              data-tooltip-title="Export PNG Image"
+              data-tooltip-desc="Export print-quality high-resolution PNG image of the board"
+              data-tooltip-pos="bottom"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span>Export PNG</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Canvas Container -->
+        <div class="canvas-viewport" id="canvas-viewport">
+          <!-- Interactive Sticky Notes are dynamically generated here -->
+          <canvas id="whiteboardCanvas" layoutsubtree></canvas>
+
+          <!-- Swimlane View Pane -->
+          <div
+            id="swimlane-view-pane"
+            class="view-pane"
+            role="tabpanel"
+            aria-labelledby="btn-tab-swimlane"
+            style="display: none"
+          >
+            <div class="pane-header">
+              <div>
+                <h3>Vertical Swimlane Flowchart</h3>
+                <p class="pane-subtitle">
+                  Cross-functional process and responsibility flow mapped across vertical swimlanes.
+                </p>
+              </div>
+              <div class="swimlane-mode-controls">
+                <div class="swimlane-summary-badges" id="swimlane-summary-badges"></div>
+                <button
+                  id="btn-swimlane-fit-height"
+                  class="btn-primary-outline active"
+                  type="button"
+                  title="Fit flowchart height to screen (F)"
+                  data-tooltip-title="Fit Height to Screen"
+                  data-tooltip-desc="Automatically scale flowchart so the complete workflow from Begin to Complete fits on screen"
+                  data-tooltip-pos="bottom"
+                  style="font-size: 0.74rem; padding: 4px 8px; height: 28px; display: inline-flex; align-items: center; gap: 4px;"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <polyline points="9 21 3 21 3 15"></polyline>
+                    <line x1="21" y1="3" x2="14" y2="10"></line>
+                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                  </svg>
+                  Fit Height
+                </button>
+                <div class="swimlane-zoom-btn-group" style="display: inline-flex; align-items: center; background: #f8fafc; border: 1px solid var(--border-light); border-radius: var(--radius-sm); overflow: hidden;">
+                  <button
+                    id="btn-swimlane-zoom-out"
+                    type="button"
+                    title="Zoom Out Flowchart"
+                    aria-label="Zoom out flowchart"
+                    style="border: none; background: transparent; padding: 2px 8px; height: 26px; cursor: pointer; font-weight: 600; font-size: 0.85rem;"
+                  >
+                    −
+                  </button>
+                  <span id="swimlane-zoom-label" style="font-size: 0.70rem; font-weight: 600; color: var(--text-muted); min-width: 36px; text-align: center; user-select: none;">Fit</span>
+                  <button
+                    id="btn-swimlane-zoom-in"
+                    type="button"
+                    title="Zoom In Flowchart"
+                    aria-label="Zoom in flowchart"
+                    style="border: none; background: transparent; padding: 2px 8px; height: 26px; cursor: pointer; font-weight: 600; font-size: 0.85rem;"
+                  >
+                    +
+                  </button>
+                </div>
+                <button
+                  id="btn-export-swimlane-png"
+                  class="btn-primary-outline"
+                  title="Export vertical swimlane flowchart as image for PowerPoint / Google Slides"
+                  data-tooltip-title="Export Flowchart PNG"
+                  data-tooltip-desc="Download high-resolution image for presentations and reports"
+                  data-tooltip-pos="bottom"
+                  style="font-size: 0.74rem; padding: 4px 10px; height: 28px; display: inline-flex; align-items: center; gap: 4px;"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Export Flowchart
+                </button>
+                <div class="swimlane-subtabs">
+                  <button
+                    id="btn-swimlane-mode-diagram"
+                    class="view-subtab-btn active"
+                    type="button"
+                    title="View vertical swimlane flowchart diagram"
+                  >
+                    Flowchart
+                  </button>
+                  <button
+                    id="btn-swimlane-mode-table"
+                    class="view-subtab-btn"
+                    type="button"
+                    title="View tabular sequence list"
+                  >
+                    Table
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Unique Swimlane/Role Values Bar at the Top -->
+            <div class="swimlane-unique-roles-bar" id="swimlane-unique-roles-bar"></div>
+            <div class="pane-content swimlane-pane-content">
+              <!-- Visual Vertical Swimlane Diagram Container -->
+              <div id="swimlane-diagram-container" class="swimlane-diagram-wrapper">
+                <div id="swimlane-diagram-viewport" class="swimlane-diagram-viewport">
+                  <!-- Dynamic vertical swimlane columns, cards, and SVG connectors -->
+                </div>
+              </div>
+
+              <!-- Table View Container -->
+              <div id="swimlane-table-container" class="swimlane-table-wrapper" style="display: none;">
+                <table id="swimlane-view-table" class="clean-table">
+                  <thead>
+                    <tr>
+                      <th>Swimlane/Role</th>
+                      <th>Sequence/Step</th>
+                      <th>Task Title</th>
+                      <th class="text-right">Duration (Days)</th>
+                      <th class="text-right">Planned Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic contents -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gantt View Pane -->
+          <div
+            id="gantt-view-pane"
+            class="view-pane"
+            role="tabpanel"
+            aria-labelledby="btn-tab-gantt"
+            style="display: none"
+          >
+            <div class="pane-header">
+              <div>
+                <h3>Gantt & WBS Project Schedule</h3>
+                <p class="pane-subtitle">
+                  Calculated timeline (Critical Path FS and Role/Lane
+                  sequencing).
+                </p>
+              </div>
+              <div class="gantt-pane-controls">
+                <span>Project Code: <strong>PRJ-2026-001</strong></span>
+                <button
+                  id="btn-export-csv-view"
+                  class="btn-primary-outline"
+                  title="Download the schedule as a CSV file for Excel"
+                  data-tooltip-title="Export CSV (Excel)"
+                  data-tooltip-desc="Download semicolon-delimited CSV dataset for Excel and Power BI"
+                  data-tooltip-pos="bottom"
+                >
+                  Export CSV (Excel)
+                </button>
+              </div>
+            </div>
+            <div
+              class="gantt-schedule-controls"
+              aria-label="Gantt schedule dates"
+            >
+              <label for="gantt-start-date">
+                <span>Start Date</span>
+                <input
+                  id="gantt-start-date"
+                  type="date"
+                  aria-describedby="gantt-date-help"
+                  data-tooltip-title="Project Start Date"
+                  data-tooltip-desc="Sets the baseline schedule kickoff date"
+                  data-tooltip-pos="top"
+                />
+              </label>
+              <label for="gantt-status-date">
+                <span>Status Date</span>
+                <input
+                  id="gantt-status-date"
+                  type="date"
+                  aria-describedby="gantt-date-help"
+                  data-tooltip-title="Status Cutoff Date"
+                  data-tooltip-desc="Cutoff date for progress, actuals, and EVM variance calculations"
+                  data-tooltip-pos="top"
+                />
+              </label>
+              <div
+                class="gantt-calculated-date"
+                data-tooltip-title="Calculated Completion Date"
+                data-tooltip-desc="Earliest project finish based on predecessor network paths"
+                data-tooltip-pos="top"
+              >
+                <span>Calculated End Date</span>
+                <strong id="gantt-end-date">—</strong>
+              </div>
+              <div
+                class="gantt-calculated-date"
+                data-tooltip-title="Critical Path Duration"
+                data-tooltip-desc="Longest sequence of dependent tasks driving total timeline"
+                data-tooltip-pos="top"
+              >
+                <span>Critical Path</span>
+                <strong id="gantt-critical-path-days">—</strong>
+              </div>
+              <span id="gantt-date-help" class="gantt-date-help">
+                End date is based on the longest path through the schedule.
+              </span>
+            </div>
+            <div class="pane-content gantt-split">
+              <div class="gantt-table-section">
+                <table id="gantt-view-table" class="clean-table">
+                  <thead>
+                    <tr>
+                      <th>Task ID</th>
+                      <th>WBS Name</th>
+                      <th>Role/Lane</th>
+                      <th class="text-right">Duration</th>
+                      <th class="text-right">Hours</th>
+                      <th class="text-right">Cost</th>
+                      <th>Predecessors</th>
+                      <th class="text-right">Act Hours</th>
+                      <th class="text-right">Act Cost</th>
+                      <th class="text-right">Progress %</th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic contents -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="gantt-visual-section">
+                <div class="gantt-timeline-scroll-area" id="gantt-timeline-scroll-area">
+                  <div class="gantt-timeline-content" id="gantt-timeline-content">
+                    <div class="gantt-timeline-header-container">
+                      <div
+                        class="gantt-timeline-header-row"
+                        id="gantt-timeline-header-row"
+                      ></div>
+                    </div>
+                    <div
+                      class="gantt-timeline-bars-container"
+                      id="gantt-timeline-bars-container"
+                    ></div>
+                    <div
+                      class="gantt-status-date-marker"
+                      id="gantt-status-date-marker"
+                      role="img"
+                      aria-label="Status date"
+                    >
+                      <span class="gantt-status-date-label">Status Date</span>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="gantt-horizontal-roller"
+                  data-tooltip-title="Timeline Window Roller"
+                  data-tooltip-desc="Drag slider horizontally to scroll across project timeline window"
+                  data-tooltip-pos="top"
+                >
+                  <label for="gantt-horizontal-roller-input">
+                    <span>Timeline window</span>
+                    <span class="gantt-horizontal-roller-hint">Drag to move left or right</span>
+                  </label>
+                  <input
+                    id="gantt-horizontal-roller-input"
+                    type="range"
+                    min="0"
+                    max="0"
+                    step="1"
+                    value="0"
+                    aria-label="Scroll the Gantt timeline horizontally"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Matrix & Risk Register View Pane -->
+          <div
+            id="risk-view-pane"
+            class="view-pane"
+            role="tabpanel"
+            aria-labelledby="btn-tab-risk"
+            style="display: none"
+          >
+            <div class="pane-header">
+              <div>
+                <h3>5×5 Risk Matrix &amp; Risk Register</h3>
+                <p class="pane-subtitle">
+                  Probability × Impact severity heatmap and prioritized project risk register.
+                </p>
+              </div>
+              <div class="risk-header-actions" style="display: flex; align-items: center; gap: 12px;">
+                <div id="risk-summary" class="risk-summary-badges"></div>
+                <div class="risk-subtabs">
+                  <button
+                    id="btn-risk-mode-split"
+                    class="view-subtab-btn active"
+                    type="button"
+                    title="View side-by-side Matrix and Register"
+                  >
+                    Split View
+                  </button>
+                  <button
+                    id="btn-risk-mode-matrix"
+                    class="view-subtab-btn"
+                    type="button"
+                    title="View 5x5 Heatmap Matrix only"
+                  >
+                    5×5 Matrix
+                  </button>
+                  <button
+                    id="btn-risk-mode-register"
+                    class="view-subtab-btn"
+                    type="button"
+                    title="View detailed Risk Register table only"
+                  >
+                    Risk Register
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="pane-content risk-view-content" id="risk-view-content">
+              <!-- Left Panel: 5x5 Probability x Impact Heatmap Card -->
+              <div class="risk-matrix-card" id="risk-matrix-card">
+                <div class="risk-card-header">
+                  <h4>5×5 Probability × Impact Heatmap</h4>
+                  <span class="risk-card-hint">Click any cell to filter register</span>
+                </div>
+                <div class="risk-card-body">
+                  <div class="risk-matrix-layout">
+                    <div class="risk-matrix-axis-label risk-matrix-y-label">
+                      <span>Probability (1–5)</span>
+                    </div>
+                    <div class="risk-matrix-board-wrap">
+                      <div class="risk-matrix-column-label">Impact (1–5)</div>
+                      <div id="risk-matrix-board" class="risk-matrix-board"></div>
+                      <div class="risk-matrix-scale-labels">
+                        <span>1 (V.Low)</span>
+                        <span>2 (Low)</span>
+                        <span>3 (Med)</span>
+                        <span>4 (High)</span>
+                        <span>5 (Crit)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Risk Severity Legend -->
+                <div class="risk-matrix-legend">
+                  <span class="risk-legend-item"><span class="risk-legend-color low"></span> Low (1–7)</span>
+                  <span class="risk-legend-item"><span class="risk-legend-color medium"></span> Med (8–14)</span>
+                  <span class="risk-legend-item"><span class="risk-legend-color high"></span> High (15–25)</span>
+                  <button id="btn-risk-clear-filter" class="btn-clear-risk-filter" type="button" style="display: none;">
+                    Show All Risks
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right Panel: Prioritized Risk Register Table Card -->
+              <div class="risk-register-card" id="risk-register-card">
+                <div class="risk-card-header">
+                  <h4>Prioritized Risk Register</h4>
+                  <span id="risk-filter-status" class="risk-filter-status" style="font-size: 0.72rem; color: var(--text-muted);">Sorted by Severity (P × I)</span>
+                </div>
+                <div class="risk-table-scroll-wrap">
+                  <table id="risk-register-table" class="clean-table">
+                    <thead>
+                      <tr>
+                        <th>Risk / Task Name</th>
+                        <th>Role / Lane</th>
+                        <th>Responsible</th>
+                        <th class="text-right">Prob (P)</th>
+                        <th class="text-right">Impact (I)</th>
+                        <th class="text-right">Score</th>
+                        <th class="text-right">Planned Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EVM View Pane -->
+          <div
+            id="evm-view-pane"
+            class="view-pane"
+            role="tabpanel"
+            aria-labelledby="btn-tab-evm"
+            style="display: none"
+          >
+            <div class="pane-header">
+              <div>
+                <h3>Earned Value Management (EVM) & S-Curve</h3>
+                <p class="pane-subtitle">
+                  Cost and schedule performance tracking (PV, EV, AC, CV, SV, CPI, SPI, EAC).
+                </p>
+              </div>
+              <div class="evm-header-actions">
+                <span id="evm-status-date-display" class="evm-status-date-badge"></span>
+              </div>
+            </div>
+            <div class="pane-content evm-view-content">
+              <!-- KPI Summary Cards (Data-ink ratio: no heavy shadows or decorative icons) -->
+              <div class="evm-kpi-grid">
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-pv-card"
+                  tabindex="0"
+                  data-tooltip-title="Planned Value (PV / BCWS)"
+                  data-tooltip-desc="Time-phased baseline budget approved for work scheduled to be completed up to the Status Date"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Planned Value (PV)</div>
+                  <div class="kpi-value" id="kpi-pv">—</div>
+                  <div class="kpi-sub">BCWS (Budgeted Work Sched)</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-ev-card"
+                  tabindex="0"
+                  data-tooltip-title="Earned Value (EV / BCWP)"
+                  data-tooltip-desc="Budgeted cost of work performed = Total BAC × Progress %"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Earned Value (EV)</div>
+                  <div class="kpi-value" id="kpi-ev">—</div>
+                  <div class="kpi-sub">BCWP (Budgeted Work Perf)</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-ac-card"
+                  tabindex="0"
+                  data-tooltip-title="Actual Cost (AC / ACWP)"
+                  data-tooltip-desc="Total realized cost incurred for work completed up to the Status Date"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Actual Cost (AC)</div>
+                  <div class="kpi-value" id="kpi-ac">—</div>
+                  <div class="kpi-sub">ACWP (Actual Work Perf)</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-cv-card"
+                  tabindex="0"
+                  data-tooltip-title="Cost Variance (CV = EV − AC)"
+                  data-tooltip-desc="Positive (>0) = Under budget · Negative (<0) = Cost overrun"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Cost Variance (CV)</div>
+                  <div class="kpi-value" id="kpi-cv">—</div>
+                  <div class="kpi-sub">EV − AC</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-sv-card"
+                  tabindex="0"
+                  data-tooltip-title="Schedule Variance (SV = EV − PV)"
+                  data-tooltip-desc="Positive (>0) = Ahead of schedule · Negative (<0) = Schedule delay"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Schedule Variance (SV)</div>
+                  <div class="kpi-value" id="kpi-sv">—</div>
+                  <div class="kpi-sub">EV − PV</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-cpi-card"
+                  tabindex="0"
+                  data-tooltip-title="Cost Index (CPI = EV / AC)"
+                  data-tooltip-desc="CPI > 1.0 indicates cost efficiency · CPI < 1.0 indicates budget overspending"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Cost Index (CPI)</div>
+                  <div class="kpi-value" id="kpi-cpi">—</div>
+                  <div class="kpi-sub">EV / AC</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-spi-card"
+                  tabindex="0"
+                  data-tooltip-title="Schedule Index (SPI = EV / PV)"
+                  data-tooltip-desc="SPI > 1.0 indicates faster progress than planned · SPI < 1.0 indicates delays"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Schedule Index (SPI)</div>
+                  <div class="kpi-value" id="kpi-spi">—</div>
+                  <div class="kpi-sub">EV / PV</div>
+                </div>
+                <div
+                  class="evm-kpi-card"
+                  id="kpi-eac-card"
+                  tabindex="0"
+                  data-tooltip-title="Forecast (BAC & EAC)"
+                  data-tooltip-desc="EAC = BAC / CPI · VAC = BAC − EAC · ETC = EAC − AC"
+                  data-tooltip-pos="bottom"
+                >
+                  <div class="kpi-label">Forecast (BAC / EAC)</div>
+                  <div class="kpi-value" id="kpi-bac-eac">—</div>
+                  <div class="kpi-sub" id="kpi-vac-sub">VAC: —</div>
+                </div>
+              </div>
+
+              <!-- S-Curve Section with Direct Labels -->
+              <div class="evm-chart-section">
+                <div class="evm-chart-header">
+                  <h4>Cumulative S-Curve (Direct Labeling & Variance Callouts)</h4>
+                  <div class="evm-chart-meta" id="evm-chart-meta"></div>
+                </div>
+                <div class="evm-canvas-container" id="evm-canvas-container">
+                  <canvas id="evmSCurveCanvas"></canvas>
+                </div>
+              </div>
+
+              <!-- Detailed WBS EVM Breakdown Table -->
+              <div class="evm-table-section">
+                <h4>WBS Earned Value Breakdown</h4>
+                <div class="clean-table-responsive">
+                  <table id="evm-wbs-table" class="clean-table">
+                    <thead>
+                      <tr>
+                        <th>Task ID</th>
+                        <th>WBS Task Name</th>
+                        <th>Role / Lane</th>
+                        <th class="text-right">Planned (BAC)</th>
+                        <th class="text-right">Progress %</th>
+                        <th class="text-right">PV (BCWS)</th>
+                        <th class="text-right">EV (BCWP)</th>
+                        <th class="text-right">AC (ACWP)</th>
+                        <th class="text-right">Cost Var (CV)</th>
+                        <th class="text-right">Sched Var (SV)</th>
+                        <th class="text-right">CPI</th>
+                        <th class="text-right">SPI</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modals and Custom Context Menu -->
+    <div
+      id="sticky-context-menu"
+      class="custom-context-menu"
+      style="display: none"
+    >
+      <div
+        class="menu-item"
+        id="menu-set-lane"
+        title="Assign this note to a swimlane or responsible role"
+        data-tooltip-title="Assign Swimlane/Role"
+        data-tooltip-desc="Group note by discipline (e.g. Engineering, Procurement, Production)"
+        data-tooltip-pos="right"
+      >
+        Assign Swimlane/Role...
+      </div>
+      <div
+        class="menu-item"
+        id="menu-set-duration"
+        title="Set the planned duration in days"
+        data-tooltip-title="Set Duration"
+        data-tooltip-desc="Set planned calendar duration in days for CPM scheduling"
+        data-tooltip-pos="right"
+      >
+        Set Duration (Days)...
+      </div>
+      <div
+        class="menu-item"
+        id="menu-set-hours"
+        title="Set the planned work hours"
+        data-tooltip-title="Set Planned Hours"
+        data-tooltip-desc="Set estimated labor effort work hours for resource tracking"
+        data-tooltip-pos="right"
+      >
+        Set Planned Hours...
+      </div>
+      <div
+        class="menu-item"
+        id="menu-set-cost"
+        title="Set the planned cost for this note"
+        data-tooltip-title="Set Planned Cost (BAC)"
+        data-tooltip-desc="Set budget baseline cost (kr) for EVM Planned Value calculations"
+        data-tooltip-pos="right"
+      >
+        Set Planned Cost...
+      </div>
+      <div
+        class="menu-item"
+        id="menu-set-risk"
+        title="Set the responsible person and risk factors"
+        data-tooltip-title="Responsibility & Risk"
+        data-tooltip-desc="Assign owner, Probability (1–5) and Impact (1–5) for the 5×5 Risk Matrix"
+        data-tooltip-pos="right"
+      >
+        Set Responsibility & Risk...
+      </div>
+      <div class="menu-item-separator"></div>
+      <div
+        class="menu-item danger"
+        id="menu-delete-note"
+        title="Permanently delete this sticky note"
+        data-tooltip-title="Delete Note"
+        data-tooltip-desc="Permanently remove this note and its dependency links from the board"
+        data-tooltip-pos="right"
+      >
+        Delete Note
+      </div>
+    </div>
+
+    <!-- User Guide & Workflow Tutorial Modal -->
+    <dialog
+      id="user-guide-dialog"
+      class="custom-dialog guide-dialog"
+      aria-labelledby="user-guide-title"
+    >
+      <div class="dialog-header">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-size: 1.25rem" aria-hidden="true">📖</span>
+          <div>
+            <h3 id="user-guide-title" style="margin: 0; font-size: 1rem">
+              Project Controls Whiteboard — User Guide & Workflow
+            </h3>
+            <span style="font-size: 0.72rem; color: var(--text-muted)">
+              End-to-End Guide for Project Controllers, PMs & Planners
+            </span>
+          </div>
+        </div>
+        <button
+          id="btn-close-guide-header"
+          class="guide-close-btn"
+          title="Close User Guide (Esc)"
+          aria-label="Close guide"
+          onclick="closeUserGuide()"
+        >
+          <span class="guide-close-text">Close</span>
+          <kbd class="guide-close-kbd">Esc</kbd>
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Sticky Quick Navigation Links -->
+      <nav class="guide-nav" aria-label="User guide sections">
+        <a href="#guide-workflow" class="guide-nav-link">🔄 4-Step Workflow</a>
+        <a href="#guide-brainstorm" class="guide-nav-link">📝 Sticky Notes</a>
+        <a href="#guide-dependencies" class="guide-nav-link">🔗 Dependencies</a>
+        <a href="#guide-swimlanes" class="guide-nav-link">🏊 Swimlanes</a>
+        <a href="#guide-gantt" class="guide-nav-link">📊 Gantt & CPM</a>
+        <a href="#guide-risk" class="guide-nav-link">⚠️ 5×5 Risk Matrix</a>
+        <a href="#guide-evm" class="guide-nav-link">📈 EVM & S-Curve</a>
+        <a href="#guide-drawing" class="guide-nav-link">🎨 Drawing Tools</a>
+        <a href="#guide-shortcuts" class="guide-nav-link">⌨️ Shortcuts</a>
+        <a href="#guide-export" class="guide-nav-link">💾 Excel & Power BI</a>
+      </nav>
+
+      <div class="guide-dialog-content">
+        <!-- Section 1: 4-Step Workflow & Infographic Illustration -->
+        <section id="guide-workflow" class="guide-section">
+          <h4>
+            <span>🔄</span> Brainstorm to Gantt: The Automated Workflow
+          </h4>
+          <p>
+            The <strong>Project Controls Whiteboard</strong> bridges the gap between fast-paced, creative brainstorming sessions and rigorous, quantitative project controls (Critical Path Method scheduling, 5×5 risk ranking, and Earned Value Management). Instead of manually transcribing post-it notes into scheduling software, the whiteboard acts as a live, computational schedule engine.
+          </p>
+
+          <!-- Infographic Illustration -->
+          <figure class="guide-figure">
+            <img
+              src="assets/Whiteboard App.png"
+              alt="Brainstorm to Gantt: The Automated Workflow - 4 Step Process"
+              class="guide-workflow-img"
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Figure 1:</strong> The 4-step "Whiteboard Prototyper" automated workflow — transforming collaborative board brainstorming into structured role swimlanes, CPM schedules, and Excel/Power BI datasets.
+            </figcaption>
+          </figure>
+
+          <!-- 4-Step Cards breakdown matching the infographic -->
+          <div class="guide-step-grid">
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge blue">Step 1</span> Rapidly Brainstorm Ideas
+              </h5>
+              <p>
+                Use the top quick-entry bar (<code>Write task &amp; Enter</code>) or press <kbd class="guide-kbd">N</kbd> to populate the board with digital sticky notes. Capture work packages, scope elements, and milestones on the fly.
+              </p>
+            </div>
+
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge slate">Step 2</span> Link Tasks with Shift-Drag
+              </h5>
+              <p>
+                Hold <kbd class="guide-kbd">Shift</kbd> and drag from one note to another to draw dependency arrows. The engine automatically creates directional Finish-to-Start (FS) predecessors for CPM scheduling.
+              </p>
+            </div>
+
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge green">Step 3</span> Auto-Organize into Swimlanes
+              </h5>
+              <p>
+                Right-click notes to assign disciplines/roles (e.g. <em>Engineering, Procurement, Fabrication, Commissioning</em>), duration, hours, costs (BAC), and risk scores. In the <strong>🏊 Swimlanes</strong> tab, click <strong>Apply &amp; Arrange Canvas Board</strong> to auto-align notes into clean sequential lanes.
+              </p>
+            </div>
+
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge red">Step 4</span> Instant Gantt, Risk &amp; EVM
+              </h5>
+              <p>
+                Automatically calculate Task IDs, predecessors, critical path days, and early start/end dates in the <strong>📊 Gantt</strong> view. Track risks in the <strong>⚠️ Risk Matrix</strong> and view real-time CPI/SPI with direct-labeled S-Curves in <strong>📈 EVM</strong>. Export to CSV for Excel and Power BI with one click.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Brainstorming & Sticky Notes -->
+        <section id="guide-brainstorm" class="guide-section">
+          <h4>
+            <span>📝</span> Rapid Brainstorming &amp; Sticky Note Data Model
+          </h4>
+          <p>
+            Every sticky note on the canvas is a fully parametric Work Breakdown Structure (WBS) work package containing duration, effort hours, cost baselines, and risk metrics.
+          </p>
+
+          <div class="guide-callout tip">
+            <p>
+              <strong>Pro-Tip:</strong> Press <kbd class="guide-kbd">N</kbd> and click anywhere on the canvas to place a note, or type task titles in the top bar's <strong>"Write task &amp; Enter"</strong> field and press <kbd class="guide-kbd">Enter</kbd> to rapidly drop notes in succession.
+            </p>
+          </div>
+
+          <h5>Sticky Note Parameters &amp; Controlling Fields</h5>
+          <table class="clean-table" style="margin-top: 8px">
+            <thead>
+              <tr>
+                <th style="width: 25%">Field Name</th>
+                <th style="width: 30%">Description</th>
+                <th style="width: 45%">Usage &amp; Impact on Calculations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Swimlane / Role</strong></td>
+                <td>Discipline, department, or lane</td>
+                <td>Groups tasks into swimlanes (e.g. <em>PM, Engineering, Procurement, Production, Quality</em>)</td>
+              </tr>
+              <tr>
+                <td><strong>Duration (Days)</strong></td>
+                <td>Planned calendar work days</td>
+                <td>Used by the CPM engine to compute early/late finish dates and critical path length</td>
+              </tr>
+              <tr>
+                <td><strong>Planned Hours</strong></td>
+                <td>Estimated labor work hours</td>
+                <td>Tracks man-hours for resource leveling and labor productivity analysis</td>
+              </tr>
+              <tr>
+                <td><strong>Planned Cost (BAC)</strong></td>
+                <td>Budget at Completion in kr/currency</td>
+                <td>Forms the financial cost baseline for Planned Value (PV) and Earned Value (EV) curves</td>
+              </tr>
+              <tr>
+                <td><strong>Resource / Responsible</strong></td>
+                <td>Assigned person, team, or vendor</td>
+                <td>Appears in the Risk Register and WBS schedule assignments</td>
+              </tr>
+              <tr>
+                <td><strong>Risk &amp; Impact (1–5)</strong></td>
+                <td>Probability (1–5) × Impact (1–5)</td>
+                <td>Calculates Weighted Risk Score (1–25) and positions note in the 5×5 Risk Matrix</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5>Color Coding Conventions (Edward Tufte Muted Palette)</h5>
+          <p>
+            Use color purposefully to signal status, scope category, or risk severity:
+          </p>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
+            <li><span class="guide-badge slate">Slate</span> — General task, default text, or administrative milestone.</li>
+            <li><span class="guide-badge blue">Blue</span> — Planned baseline scope and engineering packages.</li>
+            <li><span class="guide-badge green">Green</span> — Completed milestones, favorable performance, or actuals.</li>
+            <li><span class="guide-badge red">Red</span> — Critical path tasks, high risk ($Score \ge 15$), or unfavorable cost/schedule variances.</li>
+            <li><span class="guide-badge yellow">Yellow</span> — Medium risk ($Score \ge 8$), warnings, or items under review.</li>
+          </ul>
+        </section>
+
+        <!-- Section 3: Task Dependencies & Network Logic -->
+        <section id="guide-dependencies" class="guide-section">
+          <h4>
+            <span>🔗</span> Task Dependencies &amp; Network CPM Modeling
+          </h4>
+          <p>
+            Network logic determines the chronological sequencing of your project. By linking tasks directly on the canvas, you build an active mathematical dependency graph:
+          </p>
+          <ol style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155; margin-bottom: 12px">
+            <li>Hold down the <kbd class="guide-kbd">Shift</kbd> key.</li>
+            <li>Click and hold on the predecessor (starting) sticky note.</li>
+            <li>Drag the cursor to the successor (target) sticky note and release the mouse.</li>
+            <li>A blue directional arrow with an arrowhead is automatically rendered between note boundaries.</li>
+          </ol>
+          <div class="guide-callout">
+            <p>
+              <strong>Multi-Predecessor Logic:</strong> When a task has multiple predecessors, its start date is automatically constrained by the predecessor with the latest finish date ($ES = \max(EF_{\text{predecessors}})$), strictly adhering to standard Critical Path Method (CPM) algorithms.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Swimlanes View -->
+        <section id="guide-swimlanes" class="guide-section">
+          <h4>
+            <span>🏊</span> Swimlanes &amp; Vertical Flowchart Diagram
+          </h4>
+          <p>
+            The <strong>🏊 Swimlanes</strong> tab automatically generates an executive-ready <strong>Vertical Swimlane Flowchart</strong> matching professional Google Slides and PowerPoint project presentation standards.
+          </p>
+          <figure class="guide-figure" style="margin-top: 14px;">
+            <img
+              src="assets/Vertical-Swimlane-Flowchart-Template-Google-Slides-PowerPoint.webp"
+              alt="Vertical Swimlane Flowchart Template Reference"
+              class="guide-workflow-img"
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Figure 2:</strong> Vertical Swimlane Flowchart layout — cross-functional columns, initiation capsule (magenta), process boxes (white with WBS codes and planned cost), decision diamonds (teal), and terminal completion node.
+            </figcaption>
+          </figure>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155; margin-top: 10px;">
+            <li><strong>Cross-Functional Columns:</strong> Tasks are grouped vertically by role/discipline (e.g. <em>Legal, Buy Shed, Clear Garden, Foundations, Install Shed</em>).</li>
+            <li><strong>Decision Diamonds:</strong> High-risk tasks or questions (containing '?', 'review', 'permission', etc.) are automatically formatted as decision gates with YES/NO branch labels.</li>
+            <li><strong>Fit Height &amp; Zoom:</strong> Use <strong>Fit Height</strong> or the <strong>+ / −</strong> zoom controls to scale the entire end-to-end process onto your screen.</li>
+            <li><strong>Export Flowchart:</strong> Download high-resolution PNG images directly for management decks and project charter reviews.</li>
+          </ul>
+        </section>
+
+        <!-- Section 5: Gantt Schedule & CPM Engine -->
+        <section id="guide-gantt" class="guide-section">
+          <h4>
+            <span>📊</span> Gantt Schedule, CPM &amp; WBS Table
+          </h4>
+          <p>
+            The <strong>📊 Gantt</strong> view presents a dual-pane schedule layout compliant with professional project management standards:
+          </p>
+          <div class="guide-step-grid">
+            <div class="guide-step-card" style="border-left-color: var(--color-blue)">
+              <h5>WBS Schedule Table (Left Pane)</h5>
+              <p>
+                A comprehensive 12-column table displaying <strong>Task ID</strong>, <strong>WBS Name</strong>, <strong>Role</strong>, <strong>Duration</strong>, <strong>Planned Hours</strong>, <strong>Cost</strong>, <strong>Predecessors</strong>, <strong>Actual Hours</strong>, <strong>Actual Cost</strong>, <strong>Progress %</strong>, <strong>Start Date</strong>, and <strong>End Date</strong>. You can edit actuals and progress inline!
+              </p>
+            </div>
+            <div class="guide-step-card" style="border-left-color: var(--color-green)">
+              <h5>Interactive Gantt Timeline (Right Pane)</h5>
+              <p>
+                A visual timeline displaying color-coded schedule bars, a red vertical <strong>Status Date marker</strong>, and a dedicated <strong>horizontal window roller</strong> slider to navigate wide project timelines smoothly.
+              </p>
+            </div>
+          </div>
+          <p style="margin-top: 10px">
+            <strong>Schedule Controls:</strong>
+          </p>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
+            <li><strong>Start Date:</strong> Sets the baseline kickoff date for the project schedule.</li>
+            <li><strong>Status Date:</strong> Sets the cutoff date for actuals, progress evaluation, and EVM variance calculations.</li>
+            <li><strong>Critical Path Calculation:</strong> Displays the calculated total project duration and highlights the longest path driving the completion date.</li>
+          </ul>
+        </section>
+
+        <!-- Section 6: 5x5 Risk Matrix & Risk Register -->
+        <section id="guide-risk" class="guide-section">
+          <h4>
+            <span>⚠️</span> 5×5 Risk Matrix &amp; Risk Register
+          </h4>
+          <p>
+            Risks assigned to sticky notes are automatically compiled into an ISO/PMI-standard 5×5 Risk Assessment Matrix:
+          </p>
+          <div class="guide-callout warning">
+            <p>
+              $$\text{Weighted Risk Score} = \text{Probability (1–5)} \times \text{Impact (1–5)} \quad [\text{Range: } 1 \text{ to } 25]$$
+            </p>
+          </div>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155; margin-bottom: 12px">
+            <li><span class="guide-badge green">Low Risk (Score 1–7)</span> — Muted slate/green background. Monitor through routine project governance.</li>
+            <li><span class="guide-badge yellow">Medium Risk (Score 8–14)</span> — Muted amber background. Requires mitigation strategy and active tracking.</li>
+            <li><span class="guide-badge red">High Risk (Score 15–25)</span> — Muted red background. Critical project risk requiring immediate escalation and contingency budget.</li>
+          </ul>
+          <p>
+            Below the matrix, the <strong>Risk Register table</strong> automatically ranks all work packages in descending order of risk exposure.
+          </p>
+        </section>
+
+        <!-- Section 7: Earned Value Management (EVM) & S-Curve -->
+        <section id="guide-evm" class="guide-section">
+          <h4>
+            <span>📈</span> Earned Value Management (EVM) &amp; Tufte S-Curve
+          </h4>
+          <p>
+            The <strong>📈 EVM</strong> tab implements standard Earned Value Analysis for project controllers, tracking project performance against baseline commitments.
+          </p>
+
+          <h5>EVM KPI Formulas Reference</h5>
+          <table class="clean-table" style="margin-top: 8px">
+            <thead>
+              <tr>
+                <th style="width: 25%">Metric</th>
+                <th style="width: 35%">Formula</th>
+                <th style="width: 40%">Interpretation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Planned Value (PV)</strong></td>
+                <td>$\text{BCWS (Time-phased BAC to Status Date)}$</td>
+                <td>Approved budget assigned to scheduled work up to the Status Date</td>
+              </tr>
+              <tr>
+                <td><strong>Earned Value (EV)</strong></td>
+                <td>$EV = \text{BAC} \times \text{Progress } \%$</td>
+                <td>Budgeted cost of work actually performed ($\text{BCWP}$)</td>
+              </tr>
+              <tr>
+                <td><strong>Actual Cost (AC)</strong></td>
+                <td>$\text{ACWP (Total incurred actual expenditure)}$</td>
+                <td>Total realized cost incurred for work completed</td>
+              </tr>
+              <tr>
+                <td><strong>Cost Variance (CV)</strong></td>
+                <td>$CV = EV - AC$</td>
+                <td>Positive ($>0$) = under budget; Negative ($<0$) = cost overrun</td>
+              </tr>
+              <tr>
+                <td><strong>Schedule Variance (SV)</strong></td>
+                <td>$SV = EV - PV$</td>
+                <td>Positive ($>0$) = ahead of schedule; Negative ($<0$) = delayed</td>
+              </tr>
+              <tr>
+                <td><strong>Cost Index (CPI)</strong></td>
+                <td>$CPI = EV / AC$</td>
+                <td>$CPI > 1.0$: cost efficient; $CPI < 1.0$: overspending</td>
+              </tr>
+              <tr>
+                <td><strong>Schedule Index (SPI)</strong></td>
+                <td>$SPI = EV / PV$</td>
+                <td>$SPI > 1.0$: progressing faster than plan; $SPI < 1.0$: behind</td>
+              </tr>
+              <tr>
+                <td><strong>Forecast (EAC)</strong></td>
+                <td>$EAC = \text{BAC} / CPI$</td>
+                <td>Estimate at Completion — forecasted total project cost</td>
+              </tr>
+              <tr>
+                <td><strong>Estimate to Complete (ETC)</strong></td>
+                <td>$ETC = EAC - AC$</td>
+                <td>Expected remaining cost required to finish the project</td>
+              </tr>
+              <tr>
+                <td><strong>Variance at Completion (VAC)</strong></td>
+                <td>$VAC = \text{BAC} - EAC$</td>
+                <td>Expected final variance (positive = budget surplus)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5 style="margin-top: 18px">Edward Tufte Data-Ink S-Curve Principles</h5>
+          <p>
+            The S-Curve canvas is rendered strictly following Edward Tufte's Data-Ink maximization principles:
+          </p>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
+            <li><strong>Direct Labeling:</strong> Labels (<em>Planned / Baseline</em>, <em>Earned Value</em>, <em>Actual Cost</em>) are written directly adjacent to the curves, removing the cognitive burden of disconnected legend boxes.</li>
+            <li><strong>Status Date Variance Callouts:</strong> A dedicated dashed vertical inspection line at the Status Date displays visual delta brackets for <strong>Cost Variance ($CV$)</strong> and <strong>Schedule Variance ($SV$)</strong> with explicit $+/-$ amounts and percentage variances.</li>
+            <li><strong>Zero Chartjunk:</strong> Vertical gridlines and heavy drop shadows have been removed to highlight the project trajectory cleanly.</li>
+          </ul>
+        </section>
+
+        <!-- Section 8: Drawing Tools & Shapes -->
+        <section id="guide-drawing" class="guide-section">
+          <h4>
+            <span>🎨</span> Canvas Drawing Tools &amp; Vector Shapes
+          </h4>
+          <p>
+            The whiteboard canvas supports full freehand sketching and vector annotations for project diagrams, architecture sketches, and meeting notes:
+          </p>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
+            <li><strong>Select &amp; Move (<kbd class="guide-kbd">S</kbd>):</strong> Click and drag vector shapes or select elements on the canvas.</li>
+            <li><strong>Pen (<kbd class="guide-kbd">P</kbd>):</strong> Crisp freehand pen drawing with responsive stroke width.</li>
+            <li><strong>Highlighter (<kbd class="guide-kbd">H</kbd>):</strong> Semi-transparent marker for highlighting schedule paths, areas, or notes.</li>
+            <li><strong>Eraser (<kbd class="guide-kbd">E</kbd>) &amp; Area Eraser:</strong> Erase individual strokes or drag a bounding box to delete all enclosed items.</li>
+            <li><strong>Shapes:</strong> Line (<kbd class="guide-kbd">L</kbd>), Rectangle (<kbd class="guide-kbd">R</kbd>), Circle (<kbd class="guide-kbd">C</kbd>), Arrow (<kbd class="guide-kbd">A</kbd>), Diamond (<kbd class="guide-kbd">D</kbd>), Triangle (<kbd class="guide-kbd">T</kbd>).</li>
+            <li><strong>In-Shape Text:</strong> Double-click any geometric shape on the canvas to type inline labels and milestones!</li>
+          </ul>
+        </section>
+
+        <!-- Section 9: Keyboard Shortcuts Reference -->
+        <section id="guide-shortcuts" class="guide-section">
+          <h4>
+            <span>⌨️</span> Keyboard Shortcuts &amp; Hotkeys Cheat Sheet
+          </h4>
+          <table class="clean-table" style="margin-top: 8px">
+            <thead>
+              <tr>
+                <th style="width: 30%">Key Combination</th>
+                <th style="width: 35%">Tool / Action</th>
+                <th style="width: 35%">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><kbd class="guide-kbd">S</kbd></td>
+                <td>Select Tool</td>
+                <td>Select and move vector elements</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">P</kbd></td>
+                <td>Pen Tool</td>
+                <td>Freehand drawing</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">H</kbd></td>
+                <td>Highlighter Tool</td>
+                <td>Translucent highlighting</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">E</kbd></td>
+                <td>Eraser Tool</td>
+                <td>Erase strokes under cursor</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">L</kbd></td>
+                <td>Line Tool</td>
+                <td>Draw straight lines</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">R</kbd></td>
+                <td>Rectangle Tool</td>
+                <td>Draw rectangles / boxes</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">C</kbd></td>
+                <td>Circle Tool</td>
+                <td>Draw circles / ellipses</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">A</kbd></td>
+                <td>Arrow Tool</td>
+                <td>Draw directional arrows</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">D</kbd></td>
+                <td>Diamond Tool</td>
+                <td>Draw decision diamonds / milestones</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">T</kbd></td>
+                <td>Triangle Tool</td>
+                <td>Draw triangles / delta markers</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">N</kbd></td>
+                <td>Add Sticky Note</td>
+                <td>Place a new sticky note on canvas</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">Shift + Drag</kbd></td>
+                <td>Connect Sticky Notes</td>
+                <td>Create predecessor/successor dependency arrow</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">Ctrl + Z</kbd></td>
+                <td>Undo</td>
+                <td>Undo previous canvas or note action</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">Ctrl + Y</kbd></td>
+                <td>Redo</td>
+                <td>Redo previously undone action</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">?</kbd> or <kbd class="guide-kbd">F1</kbd></td>
+                <td>User Guide</td>
+                <td>Open this User Guide &amp; Workflow dialog</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">Esc</kbd></td>
+                <td>Close Modal</td>
+                <td>Dismiss any active dialog or popup</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Section 10: File Management & Interoperability -->
+        <section id="guide-export" class="guide-section">
+          <h4>
+            <span>💾</span> File Management, Microsoft Excel &amp; Power BI Export
+          </h4>
+          <p>
+            The Project Controls Whiteboard operates <strong>100% local-first</strong>. All data remains on your machine with zero cloud tracking:
+          </p>
+          <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
+            <li><strong>Save Board (JSON):</strong> Type a project name (e.g. <code>New Garden Shed</code>) and click <strong>Save Board</strong> to download the complete vector strokes, notes, dependencies, and EVM data as a persistent <code>.json</code> file.</li>
+            <li><strong>Open File:</strong> Click <strong>Open File</strong> to load any saved project, such as the bundled sample project <code>samples/New Garden Shed.json</code>.</li>
+            <li><strong>Export PNG:</strong> Export a high-resolution, print-ready image of your whiteboard sketches and notes for executive presentations.</li>
+            <li><strong>Export CSV (Excel):</strong> In the Gantt view, click <strong>Export CSV (Excel)</strong> to generate a semicolon-delimited CSV dataset configured for direct import into Microsoft Excel Power Query and Power BI DAX models.</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="dialog-footer guide-dialog-footer">
+        <span class="guide-footer-hint">Press <kbd class="guide-kbd">Esc</kbd> or click anywhere outside to close</span>
+        <button
+          type="button"
+          class="btn-primary guide-close-action-btn"
+          onclick="closeUserGuide()"
+        >
+          Got it / Close Guide (Esc)
+        </button>
+      </div>
+    </dialog>
+
+    <!-- Swimlane Preview Modal -->
+    <dialog id="swimlane-dialog" class="custom-dialog">
+      <div class="dialog-header">
+        <h3>Organize Swimlanes Proposal</h3>
+        <button
+          class="close-dialog"
+          title="Close this dialog"
+          onclick="document.getElementById('swimlane-dialog').close()"
+        >
+          ✕
+        </button>
+      </div>
+      <div class="dialog-content">
+        <p
+          style="
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+          "
+        >
+          Here is the proposed layout based on sticky note connections and
+          assigned roles:
+        </p>
+        <table id="swimlane-preview-table" class="clean-table">
+          <thead>
+            <tr>
+              <th>Swimlane/Role</th>
+              <th>Sequence/Step</th>
+              <th>Task Title</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic contents -->
+          </tbody>
+        </table>
+      </div>
+      <div class="dialog-footer">
+        <button
+          class="btn-cancel"
+          onclick="document.getElementById('swimlane-dialog').close()"
+        >
+          Cancel
+        </button>
+        <button
+          id="btn-accept-swimlane"
+          class="btn-primary"
+          title="Apply the proposed swimlane arrangement to the board"
+        >
+          Accept & Arrange Brett
+        </button>
+      </div>
+    </dialog>
+
+    <!-- Gantt/WBS Modal -->
+    <dialog id="gantt-dialog" class="custom-dialog lg">
+      <div class="dialog-header">
+        <h3>Gantt & WBS Project Schedule</h3>
+        <button
+          class="close-dialog"
+          title="Close this dialog"
+          onclick="document.getElementById('gantt-dialog').close()"
+        >
+          ✕
+        </button>
+      </div>
+      <div class="dialog-content">
+        <div class="gantt-meta-row">
+          <span>Project Code: <strong>PRJ-2026-001</strong></span>
+          <button
+            id="btn-export-csv"
+            class="btn-primary-outline"
+            title="Download the Gantt schedule as a CSV file for Excel"
+          >
+            Export to CSV (Excel)
+          </button>
+        </div>
+        <table id="gantt-preview-table" class="clean-table">
+          <thead>
+            <tr>
+              <th>Task ID</th>
+              <th>WBS Name</th>
+              <th>Role/Lane</th>
+              <th class="text-right">Duration</th>
+              <th class="text-right">Planned Hours</th>
+              <th class="text-right">Planned Cost</th>
+              <th>Predecessors</th>
+              <th class="text-right">Act Hours</th>
+              <th class="text-right">Act Cost</th>
+              <th class="text-right">Progress %</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic contents -->
+          </tbody>
+        </table>
+      </div>
+    </dialog>
+
+    <!-- Edit Note Properties Modal -->
+    <dialog id="note-properties-dialog" class="custom-dialog">
+      <div class="dialog-header">
+        <h3>Edit Note Properties</h3>
+        <button
+          class="close-dialog"
+          title="Close this dialog"
+          onclick="document.getElementById('note-properties-dialog').close()"
+        >
+          ✕
+        </button>
+      </div>
+      <form id="note-properties-form" method="dialog">
+        <div class="dialog-content">
+          <div class="form-group" style="margin-bottom: 16px">
+            <label
+              for="prop-lane"
+              style="
+                display: block;
+                font-weight: 500;
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+                color: var(--text-main);
+              "
+              >Swimlane / Role</label
+            >
+            <input
+              type="text"
+              id="prop-lane"
+              name="lane"
+              list="lane-presets"
+              placeholder="e.g. Engineering, Procurement, Production..."
+              style="
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid var(--border-light);
+                border-radius: 4px;
+                font-size: 0.9rem;
+                outline: none;
+                font-family: var(--font-family);
+                box-sizing: border-box;
+              "
+            />
+            <datalist id="lane-presets">
+              <option value="Project Management"></option>
+              <option value="Engineering"></option>
+              <option value="Procurement"></option>
+              <option value="Fabrication"></option>
+              <option value="Assembly"></option>
+              <option value="Quality & Inspection"></option>
+              <option value="Commissioning"></option>
+              <option value="Generelt"></option>
+            </datalist>
+          </div>
+          <div
+            class="form-row"
+            style="display: flex; gap: 16px; margin-bottom: 16px"
+          >
+            <div class="form-group" style="flex: 1">
+              <label
+                for="prop-duration"
+                style="
+                  display: block;
+                  font-weight: 500;
+                  font-size: 0.85rem;
+                  margin-bottom: 6px;
+                  color: var(--text-main);
+                "
+                >Duration (Days)</label
+              >
+              <input
+                type="number"
+                id="prop-duration"
+                name="duration"
+                min="1"
+                step="1"
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid var(--border-light);
+                  border-radius: 4px;
+                  font-size: 0.9rem;
+                  outline: none;
+                  font-family: var(--font-family);
+                  box-sizing: border-box;
+                "
+              />
+            </div>
+            <div class="form-group" style="flex: 1">
+              <label
+                for="prop-hours"
+                style="
+                  display: block;
+                  font-weight: 500;
+                  font-size: 0.85rem;
+                  margin-bottom: 6px;
+                  color: var(--text-main);
+                "
+                >Planned Hours</label
+              >
+              <input
+                type="number"
+                id="prop-hours"
+                name="plannedHours"
+                min="0"
+                step="1"
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid var(--border-light);
+                  border-radius: 4px;
+                  font-size: 0.9rem;
+                  outline: none;
+                  font-family: var(--font-family);
+                  box-sizing: border-box;
+                "
+              />
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px">
+            <label
+              for="prop-cost"
+              style="
+                display: block;
+                font-weight: 500;
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+                color: var(--text-main);
+              "
+              >Planned Cost (kr)</label
+            >
+            <input
+              type="number"
+              id="prop-cost"
+              name="plannedCost"
+              min="0"
+              step="any"
+              style="
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid var(--border-light);
+                border-radius: 4px;
+                font-size: 0.9rem;
+                outline: none;
+                font-family: var(--font-family);
+                box-sizing: border-box;
+              "
+            />
+          </div>
+          <div class="form-group" style="margin-bottom: 16px">
+            <label
+              for="prop-resource"
+              style="
+                display: block;
+                font-weight: 500;
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+                color: var(--text-main);
+              "
+              >Resource / Responsible</label
+            >
+            <input
+              type="text"
+              id="prop-resource"
+              name="resource"
+              placeholder="Person, team, or resource"
+              style="
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid var(--border-light);
+                border-radius: 4px;
+                font-size: 0.9rem;
+                outline: none;
+                font-family: var(--font-family);
+                box-sizing: border-box;
+              "
+            />
+          </div>
+          <div
+            class="form-row"
+            style="display: flex; gap: 16px; margin-bottom: 16px"
+          >
+            <div class="form-group" style="flex: 1">
+              <label
+                for="prop-risk"
+                style="
+                  display: block;
+                  font-weight: 500;
+                  font-size: 0.85rem;
+                  margin-bottom: 6px;
+                  color: var(--text-main);
+                "
+                >Risk Factor (1–5)</label
+              >
+              <input
+                type="number"
+                id="prop-risk"
+                name="riskFactor"
+                min="1"
+                max="5"
+                step="1"
+                required
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid var(--border-light);
+                  border-radius: 4px;
+                  font-size: 0.9rem;
+                  outline: none;
+                  font-family: var(--font-family);
+                  box-sizing: border-box;
+                "
+              />
+            </div>
+            <div class="form-group" style="flex: 1">
+              <label
+                for="prop-impact"
+                style="
+                  display: block;
+                  font-weight: 500;
+                  font-size: 0.85rem;
+                  margin-bottom: 6px;
+                  color: var(--text-main);
+                "
+                >Impact Factor (1–5)</label
+              >
+              <input
+                type="number"
+                id="prop-impact"
+                name="impactFactor"
+                min="1"
+                max="5"
+                step="1"
+                required
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid var(--border-light);
+                  border-radius: 4px;
+                  font-size: 0.9rem;
+                  outline: none;
+                  font-family: var(--font-family);
+                  box-sizing: border-box;
+                "
+              />
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px">
+            <label
+              for="prop-weighted"
+              style="
+                display: block;
+                font-weight: 500;
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+                color: var(--text-main);
+              "
+              >Weighted Factor (Risk × Impact, 1–25)</label
+            >
+            <input
+              type="number"
+              id="prop-weighted"
+              name="weightedFactor"
+              min="1"
+              max="25"
+              readonly
+              aria-readonly="true"
+              style="
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid var(--border-light);
+                border-radius: 4px;
+                font-size: 0.9rem;
+                outline: none;
+                font-family: var(--font-family);
+                box-sizing: border-box;
+                background: #f8fafc;
+              "
+            />
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button
+            type="button"
+            class="btn-cancel"
+            onclick="document.getElementById('note-properties-dialog').close()"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Canvas Hover Tooltip & Global Intuitive UI Tooltip -->
+    <div id="canvas-tooltip" class="canvas-tooltip" style="display: none"></div>
+    <div id="app-tooltip" class="app-tooltip" role="tooltip" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>

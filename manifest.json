@@ -1,0 +1,17 @@
+{
+  "name": "Project Controls Whiteboard",
+  "short_name": "PM Whiteboard",
+  "description": "High data-ink ratio project controls whiteboard with Gantt scheduling, Swimlanes, Risk Matrix, and EVM S-Curves.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.venv/
+env/
+venv/
+
+# Editor & OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+.idea/
+.vscode/
+
+# Local backups
+*.bak
+*.swp
+
+# Build and coverage output
+dist/
+build/
+coverage/
+
+# Local OS/editor metadata
+.history/
