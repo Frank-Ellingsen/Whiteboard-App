@@ -4515,7 +4515,7 @@
       "impactFactor": 4,
       "weightedFactor": 12,
       "color": "#1e293b",
-      "text": "Tre surgeon"
+      "text": "Tree surgeon"
     },
     {
       "id": "note-1787409812988983",
@@ -4731,7 +4731,7 @@
       "impactFactor": 3,
       "weightedFactor": 9,
       "color": "#eab308",
-      "text": "Asembly shed"
+      "text": "Assembly shed"
     },
     {
       "id": "note-1787411381374339",
@@ -4821,7 +4821,7 @@
       "impactFactor": 5,
       "weightedFactor": 5,
       "color": "#eab308",
-      "text": "Set up up PC/Music"
+      "text": "Set up PC/Music"
     }
   ],
   "dependencies": [

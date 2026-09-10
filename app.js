@@ -885,8 +885,61 @@ function convertHexToRGBA(hex, alpha) {
 }
 
 // -------------------------------------------------------------
-// Interactive Sticky Notes System
+// Interactive Sticky Notes System & Touch/Mobile Controls
 // -------------------------------------------------------------
+let touchLinkingNote = null;
+let touchLinkingBtn = null;
+
+function cancelTouchLink() {
+  if (touchLinkingBtn) {
+    touchLinkingBtn.classList.remove('note-linking');
+  }
+  touchLinkingNote = null;
+  touchLinkingBtn = null;
+  announceA11y('Dependency linking cancelled.');
+}
+
+function startTouchLink(sourceNote, btn) {
+  if (touchLinkingNote && touchLinkingNote.id === sourceNote.id) {
+    cancelTouchLink();
+    return;
+  }
+  if (touchLinkingNote && touchLinkingNote.id !== sourceNote.id) {
+    completeTouchLink(sourceNote);
+    return;
+  }
+  touchLinkingNote = sourceNote;
+  touchLinkingBtn = btn;
+  btn.classList.add('note-linking');
+  announceA11y(
+    `Linking from ${sourceNote.text || 'selected task'}. Tap another note to complete link.`
+  );
+}
+
+function completeTouchLink(targetNote) {
+  if (!touchLinkingNote || touchLinkingNote.id === targetNote.id) {
+    cancelTouchLink();
+    return;
+  }
+  const exists = dependencies.some(
+    (dep) => dep.from === touchLinkingNote.id && dep.to === targetNote.id
+  );
+  if (!exists) {
+    const newDep = { from: touchLinkingNote.id, to: targetNote.id };
+    dependencies.push(newDep);
+    pushAction({ type: 'addDependency', dependency: newDep });
+    drawAll();
+    autoSaveCurrentState();
+    if (typeof activeView !== 'undefined' && activeView === 'gantt') {
+      refreshGanttSchedule();
+    }
+    announceA11y(
+      `Linked dependency: ${touchLinkingNote.text || 'Task'} -> ${targetNote.text || 'Task'}.`
+    );
+  }
+  cancelTouchLink();
+}
+
 function createStickyNote(
   x,
   y,
@@ -919,17 +972,50 @@ function createStickyNote(
   textarea.placeholder = 'Double click to write...';
   textarea.value = text;
 
+  // Header Actions Container (Touch & Desktop friendly)
+  const actionsHeader = document.createElement('div');
+  actionsHeader.className = 'note-actions-header';
+
+  const linkBtn = document.createElement('button');
+  linkBtn.type = 'button';
+  linkBtn.className = 'note-action-btn note-link-btn';
+  linkBtn.innerHTML = '🔗';
+  linkBtn.title = 'Link dependency to another note (tap here, then tap target note)';
+  linkBtn.setAttribute('aria-label', 'Link dependency to another note');
+  linkBtn.onclick = (e) => {
+    e.stopPropagation();
+    startTouchLink(noteState, linkBtn);
+  };
+
+  const propsBtn = document.createElement('button');
+  propsBtn.type = 'button';
+  propsBtn.className = 'note-action-btn note-props-btn';
+  propsBtn.innerHTML = '⚙';
+  propsBtn.title = 'Edit task properties (Cost, Hours, Risk, Lane)';
+  propsBtn.setAttribute('aria-label', 'Edit task properties');
+  propsBtn.onclick = (e) => {
+    e.stopPropagation();
+    contextMenuTargetNoteId = noteId;
+    openNotePropertiesDialog();
+  };
+
   const deleteBtn = document.createElement('button');
-  deleteBtn.className = 'note-delete';
+  deleteBtn.type = 'button';
+  deleteBtn.className = 'note-action-btn note-delete';
   deleteBtn.innerHTML = '✕';
   deleteBtn.title = 'Delete note';
-
-  deleteBtn.onclick = () => {
+  deleteBtn.setAttribute('aria-label', 'Delete note');
+  deleteBtn.onclick = (e) => {
+    e.stopPropagation();
     deleteStickyNote(noteId);
   };
 
+  actionsHeader.appendChild(linkBtn);
+  actionsHeader.appendChild(propsBtn);
+  actionsHeader.appendChild(deleteBtn);
+
   note.appendChild(badge);
-  note.appendChild(deleteBtn);
+  note.appendChild(actionsHeader);
   note.appendChild(textarea);
   const details = document.createElement('div');
   details.id = `details-${noteId}`;
@@ -982,7 +1068,18 @@ function createStickyNote(
   let offset = { x: 0, y: 0 };
 
   note.addEventListener('pointerdown', (e) => {
-    if (e.target === textarea || e.target === deleteBtn || e.button === 2) {
+    if (e.target === textarea || e.target.closest('.note-actions-header') || e.button === 2) {
+      return;
+    }
+
+    // Touch linking mode active -> complete or cancel link on tap
+    if (touchLinkingNote) {
+      e.preventDefault();
+      if (touchLinkingNote.id === noteId) {
+        cancelTouchLink();
+      } else {
+        completeTouchLink(noteState);
+      }
       return;
     }
 
@@ -1860,7 +1957,7 @@ const DEFAULT_DEMO_PROJECT = {
       impactFactor: 4,
       weightedFactor: 12,
       color: '#1e293b',
-      text: 'Tre surgeon',
+      text: 'Tree surgeon',
     },
     {
       id: 'note-1787409812988983',
@@ -1986,7 +2083,7 @@ const DEFAULT_DEMO_PROJECT = {
       impactFactor: 4,
       weightedFactor: 12,
       color: '#eab308',
-      text: 'Delveriy time',
+      text: 'Delivery time',
     },
     {
       id: 'note-1787410428873848',
@@ -2076,7 +2173,7 @@ const DEFAULT_DEMO_PROJECT = {
       impactFactor: 3,
       weightedFactor: 9,
       color: '#eab308',
-      text: 'Asembly shed',
+      text: 'Assembly shed',
     },
     {
       id: 'note-1787411381374339',
@@ -2166,7 +2263,7 @@ const DEFAULT_DEMO_PROJECT = {
       impactFactor: 2,
       weightedFactor: 2,
       color: '#eab308',
-      text: 'Set up up PC/Music',
+      text: 'Set up PC/Music',
     },
   ],
   dependencies: [
@@ -2268,6 +2365,22 @@ async function loadDemoProject() {
 }
 window.loadDemoProject = loadDemoProject;
 
+async function loadWeddingProject() {
+  try {
+    const res = await fetch('./samples/Wedding Planning Project.json');
+    if (res.ok) {
+      const data = await res.json();
+      applyBoardState(data, 'Wedding Planning Project.json');
+      announceA11y('Loaded Wedding Planning Project.');
+      return;
+    }
+  } catch (e) {
+    console.error('Failed to load wedding project from samples:', e);
+  }
+  announceA11y('Could not load Wedding Planning Project.');
+}
+window.loadWeddingProject = loadWeddingProject;
+
 function loadInitialBoardState() {
   try {
     const autosave = localStorage.getItem('whiteboard-autosave');
@@ -2309,6 +2422,7 @@ function loadInitialBoardState() {
 }
 
 function clearBoardForImport(preserveHistory = false) {
+  cancelTouchLink();
   document.querySelectorAll('.sticky-note').forEach((note) => note.remove());
   stickyNotes = [];
   strokes = [];
@@ -6229,7 +6343,17 @@ function switchView(viewName) {
     activeTabBtn.setAttribute('tabindex', '0');
   }
 
+  // Update mobile bottom nav tab active states
+  document.querySelectorAll('.mobile-tab-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.getAttribute('data-view') === viewName);
+  });
+
   // 2. Toggle DOM views
+  const sidebarEl = document.querySelector('.sidebar');
+  if (sidebarEl && window.innerWidth <= 768) {
+    sidebarEl.classList.remove('mobile-open');
+  }
+
   const canvasElement = document.getElementById('whiteboardCanvas');
   const swimlanePane = document.getElementById('swimlane-view-pane');
   const ganttPane = document.getElementById('gantt-view-pane');
@@ -6613,8 +6737,9 @@ function initTooltips() {
   document.addEventListener(
     'mouseenter',
     (e) => {
+      if (!e.target || typeof e.target.closest !== 'function') return;
       const target = e.target.closest(
-        '[data-tooltip-title], [data-tooltip], [data-original-title], [title], .tool-btn, .color-btn, .view-tab-btn, .evm-kpi-card, .menu-item, .utility-btn, .guide-btn'
+        '[data-tooltip-title], [data-tooltip], [data-tooltip-desc], [data-original-title], [title], .tool-btn, .color-btn, .view-tab-btn, .evm-kpi-card, .menu-item, .utility-btn, .guide-btn'
       );
       if (!target) return;
 
@@ -6637,8 +6762,9 @@ function initTooltips() {
   document.addEventListener(
     'mouseleave',
     (e) => {
+      if (!e.target || typeof e.target.closest !== 'function') return;
       const target = e.target.closest(
-        '[data-tooltip-title], [data-tooltip], [data-original-title], [title], .tool-btn, .color-btn, .view-tab-btn, .evm-kpi-card, .menu-item, .utility-btn, .guide-btn'
+        '[data-tooltip-title], [data-tooltip], [data-tooltip-desc], [data-original-title], [title], .tool-btn, .color-btn, .view-tab-btn, .evm-kpi-card, .menu-item, .utility-btn, .guide-btn'
       );
       if (target) {
         hideAppTooltip();
@@ -6654,6 +6780,25 @@ function initTooltips() {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') hideAppTooltip();
   });
+
+  // Attach mobile bottom nav click listeners
+  document.querySelectorAll('.mobile-tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const v = btn.getAttribute('data-view');
+      if (v) switchView(v);
+    });
+  });
+
+  // Attach mobile sidebar toggle
+  const btnMobileToggle = document.getElementById('btn-mobile-sidebar-toggle');
+  if (btnMobileToggle) {
+    btnMobileToggle.addEventListener('click', () => {
+      const sidebarEl = document.querySelector('.sidebar');
+      if (sidebarEl) {
+        sidebarEl.classList.toggle('mobile-open');
+      }
+    });
+  }
 }
 
 initTooltips();

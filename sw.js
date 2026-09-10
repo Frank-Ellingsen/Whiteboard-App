@@ -1,5 +1,5 @@
-// Project Controls Whiteboard - Offline Service Worker
-const CACHE_NAME = 'pm-whiteboard-v2';
+// Project Controls Whiteboard - Offline Service Worker (Network-first with offline fallback)
+const CACHE_NAME = 'pm-whiteboard-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -7,18 +7,19 @@ const ASSETS_TO_CACHE = [
   './app.js',
   './manifest.json',
   './samples/New Garden Shed - Full Board.json',
+  './samples/Wedding Planning Project.json',
   './assets/favicon.svg',
   './assets/Whiteboard App.png',
   './assets/Vertical-Swimlane-Flowchart-Template-Google-Slides-PowerPoint.webp',
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -36,8 +37,17 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.status === 200) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
+

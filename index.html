@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#1e293b" />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=2.2" />
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -583,6 +583,14 @@
       <div class="canvas-area-wrapper">
         <!-- Toolbar helper / Quick settings overlay -->
         <div class="top-bar">
+          <button
+            id="btn-mobile-sidebar-toggle"
+            class="mobile-sidebar-toggle-btn"
+            title="Toggle Drawing & Templates Sidebar"
+            aria-label="Toggle Drawing & Templates Sidebar"
+          >
+            🛠️
+          </button>
           <div class="navigation-info">
             Active Template: <span id="current-template-name">Vertical Swimlanes</span>
           </div>
@@ -753,7 +761,20 @@
               >
                 <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
               </svg>
-              <span>Demo Project</span>
+              <span>Demo Shed</span>
+            </button>
+            <button
+              id="btn-load-wedding"
+              class="secondary-btn"
+              type="button"
+              onclick="loadWeddingProject()"
+              title="Load Wedding Planning mockup project with 18 tasks, 5 swimlanes, risks, and EVM"
+              aria-label="Load wedding planning mockup project"
+              data-tooltip-title="Wedding Mockup Project"
+              data-tooltip-desc="Load comprehensive wedding planning project with 18 tasks across 5 lanes, CPM schedule, and EVM actuals"
+              data-tooltip-pos="bottom"
+            >
+              <span>💍 Wedding Plan</span>
             </button>
             <input
               id="project-file-input"
@@ -2362,15 +2383,44 @@
       </form>
     </dialog>
 
+    <!-- Smartphone Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile View Navigation">
+      <button class="mobile-tab-btn active" data-view="canvas" type="button" aria-label="Board View">
+        <span class="mobile-tab-icon">🎨</span>
+        <span class="mobile-tab-label">Board</span>
+      </button>
+      <button class="mobile-tab-btn" data-view="swimlane" type="button" aria-label="Swimlanes View">
+        <span class="mobile-tab-icon">🏊</span>
+        <span class="mobile-tab-label">Swimlanes</span>
+      </button>
+      <button class="mobile-tab-btn" data-view="gantt" type="button" aria-label="Gantt View">
+        <span class="mobile-tab-icon">📊</span>
+        <span class="mobile-tab-label">Gantt</span>
+      </button>
+      <button class="mobile-tab-btn" data-view="risk" type="button" aria-label="Risk Matrix View">
+        <span class="mobile-tab-icon">⚠️</span>
+        <span class="mobile-tab-label">Risk</span>
+      </button>
+      <button class="mobile-tab-btn" data-view="evm" type="button" aria-label="EVM View">
+        <span class="mobile-tab-icon">📈</span>
+        <span class="mobile-tab-label">EVM</span>
+      </button>
+    </nav>
+
     <!-- Canvas Hover Tooltip & Global Intuitive UI Tooltip -->
     <div id="canvas-tooltip" class="canvas-tooltip" style="display: none"></div>
     <div id="app-tooltip" class="app-tooltip" role="tooltip" aria-hidden="true"></div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=2.2"></script>
     <script>
       if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (let reg of registrations) {
+            reg.update();
+          }
+        });
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(() => {});
+          navigator.serviceWorker.register('./sw.js?v=2.2').catch(() => {});
         });
       }
     </script>
