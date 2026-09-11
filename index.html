@@ -700,6 +700,16 @@
             >
               <span>💍 Wedding Plan</span>
             </button>
+            <a
+              id="btn-switch-mobile"
+              href="mobile.html"
+              class="secondary-btn"
+              title="Open simplified smartphone mobile version"
+              aria-label="Open mobile smartphone version"
+              style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"
+            >
+              <span>📱 Mobile</span>
+            </a>
             <input
               id="project-file-input"
               type="file"
@@ -1569,6 +1579,7 @@
         <a href="#guide-drawing" class="guide-nav-link">🎨 Drawing Tools</a>
         <a href="#guide-shortcuts" class="guide-nav-link">⌨️ Shortcuts</a>
         <a href="#guide-export" class="guide-nav-link">💾 Projects &amp; Export</a>
+        <a href="#guide-mobile" class="guide-nav-link">📱 Mobile App</a>
       </nav>
 
       <div class="guide-dialog-content">
@@ -2058,6 +2069,54 @@
             <li><strong>Export CSV (Excel &amp; Power BI):</strong> In the Gantt view, click <strong>Export CSV (Excel)</strong> to generate a clean, semicolon-delimited CSV dataset formatted with UTF-8 BOM encoding. Designed for frictionless import into Microsoft Excel Power Query, Power BI DAX models, or DuckDB analytical queries.</li>
             <li><strong>Export PNG (<code>📷 Export PNG</code>):</strong> Export a crisp, print-ready image of your whiteboard sketches, notes, and diagrams for executive presentations and project charter decks.</li>
           </ul>
+        </section>
+
+        <!-- Section 11: Smartphone Mobile App (mobile.html) -->
+        <section id="guide-mobile" class="guide-section">
+          <h4>
+            <span>📱</span> Smartphone Mobile Version (<a href="mobile.html" style="color: var(--primary); text-decoration: underline;">mobile.html</a>)
+          </h4>
+          <p>
+            For rapid task entry in the field, shipyard drydock, job site, or on-the-go meetings, a dedicated, lightweight mobile application version is available at <code>mobile.html</code>.
+          </p>
+
+          <div class="guide-step-grid" style="margin-top: 10px;">
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge blue">Quick Entry</span> Rapid Task Input Form
+              </h5>
+              <p>
+                Thumb-friendly input with quick discipline pills (<em>Engineering, Procurement, Production, Management, Quality, Logistics</em>), calendar duration in days, estimated work hours, and budget baseline cost (BAC in kr). Hitting Enter or tapping <strong>➕ Add Task to Board</strong> drops the note instantly into your project with immediate feedback.
+              </p>
+            </div>
+
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge slate">Auto-Grid</span> Whiteboard Swimlanes
+              </h5>
+              <p>
+                Tasks entered on mobile are automatically calculated with desktop canvas coordinates (<code>X</code> positioned by discipline column, <code>Y</code> spaced sequentially by task order). When you open the project on your desktop computer, all sticky notes appear neatly organized in their respective swimlanes.
+              </p>
+            </div>
+
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge green">1-Tap Save</span> Direct File Saving &amp; Parity
+              </h5>
+              <p>
+                Tap <strong>💾 Save</strong> in the header or in the <strong>Files</strong> tab to instantly download your complete <code>&lt;ProjectName&gt;.json</code> file directly to your smartphone. The schema is 100% compatible with the desktop whiteboard, Gantt CPM engine, risk matrix, and EVM calculations.
+              </p>
+            </div>
+
+            <div class="guide-step-card">
+              <h5>
+                <span class="guide-badge red">Offline</span> Local-First &amp; PWA
+              </h5>
+              <p>
+                Operates with zero cloud latency and no server requirements. Autosaves to mobile <code>localStorage</code> continuously. Switch seamlessly between mobile (<code>mobile.html</code>) and full desktop (<code>index.html</code>) using the header toggle buttons.
+              </p>
+            </div>
+          </div>
         </section>
       </div>
 

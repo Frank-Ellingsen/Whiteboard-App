@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="description"
+      content="Project Controls Whiteboard Mobile - Fast task entry to whiteboard and instant file export."
+    />
+    <title>Whiteboard Mobile - Rapid Task Entry</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="stylesheet" href="mobile.css" />
+  </head>
+  <body>
+    <!-- Top Mobile Sticky Header -->
+    <header class="mobile-header">
+      <div class="mobile-brand">
+        <div class="mobile-brand-title">
+          <span>📊 Whiteboard</span>
+          <span id="header-task-badge" class="badge badge-blue">0 tasks</span>
+        </div>
+        <input
+          id="project-name-header"
+          type="text"
+          class="project-name-input"
+          value="Mobile Project"
+          title="Tap to rename project"
+          aria-label="Project name"
+        />
+      </div>
+      <div class="mobile-header-actions">
+        <button
+          id="btn-save-header"
+          type="button"
+          class="btn btn-primary btn-sm"
+          title="Save project JSON to file"
+        >
+          💾 Save
+        </button>
+        <a
+          href="index.html"
+          class="btn btn-secondary btn-sm"
+          title="Switch to full desktop whiteboard"
+          aria-label="Desktop view"
+        >
+          🖥️
+        </a>
+      </div>
+    </header>
+
+    <!-- Hidden File Input for Board JSON Import -->
+    <input
+      id="mobile-file-input"
+      type="file"
+      accept=".json,application/json"
+      style="display: none;"
+    />
+
+    <!-- =========================================================================
+         VIEW 1: QUICK TASK ENTRY (Default View)
+         ========================================================================= -->
+    <main id="view-add" class="mobile-view active">
+      <div class="card">
+        <div class="card-title">
+          <span>➕ Add Task to Whiteboard</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">Tap or Enter</span>
+        </div>
+
+        <form id="mobile-add-task-form">
+          <!-- Task / WBS Title -->
+          <div class="form-group">
+            <label class="form-label" for="task-text-input">Task / Deliverable Name *</label>
+            <input
+              id="task-text-input"
+              type="text"
+              class="form-input"
+              placeholder="e.g. Assemble hull bulkheads"
+              required
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Discipline / Swimlane Selection -->
+          <div class="form-group">
+            <label class="form-label">Discipline / Swimlane</label>
+            <div id="swimlane-pills-container" class="swimlane-pills"></div>
+            <div style="margin-top: 6px;">
+              <input
+                id="task-custom-lane"
+                type="text"
+                class="form-input"
+                placeholder="Or type custom lane name..."
+                style="min-height: 36px; font-size: 0.82rem;"
+              />
+            </div>
+          </div>
+
+          <!-- Duration, Hours, Planned Cost (BAC) -->
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label" for="task-duration-input">Days</label>
+              <input
+                id="task-duration-input"
+                type="number"
+                class="form-input number-input"
+                min="1"
+                value="5"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="task-hours-input">Hours</label>
+              <input
+                id="task-hours-input"
+                type="number"
+                class="form-input number-input"
+                min="0"
+                value="40"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="task-cost-input">Cost (kr)</label>
+              <input
+                id="task-cost-input"
+                type="number"
+                class="form-input number-input"
+                min="0"
+                step="500"
+                value="25000"
+              />
+            </div>
+          </div>
+
+          <!-- Color Tag -->
+          <div class="form-group">
+            <label class="form-label">Color Tag</label>
+            <div id="color-tags-container" class="color-tags"></div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-accent btn-block" style="margin-top: 8px;">
+            ➕ Add Task to Board
+          </button>
+        </form>
+      </div>
+
+      <!-- Quick Recent Tasks Stream -->
+      <div class="card">
+        <div class="card-title">
+          <span>Recent Added Tasks</span>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            onclick="window.switchMobileView('board')"
+          >
+            View All ➔
+          </button>
+        </div>
+        <div id="recent-tasks-container"></div>
+      </div>
+    </main>
+
+    <!-- =========================================================================
+         VIEW 2: WHITEBOARD SWIMLANES
+         ========================================================================= -->
+    <section id="view-board" class="mobile-view">
+      <div class="card" style="padding: 10px 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="font-size: 0.78rem; color: var(--text-muted);">
+            Total Planned Hours: <strong id="summary-total-hours" style="color: var(--text-main);">0</strong>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">
+            Total BAC: <strong id="summary-total-cost" style="color: var(--text-main);">0 kr</strong>
+          </div>
+        </div>
+      </div>
+
+      <div id="swimlane-board-container"></div>
+    </section>
+
+    <!-- =========================================================================
+         VIEW 3: TASK LIST / TUFTE TABLE
+         ========================================================================= -->
+    <section id="view-list" class="mobile-view">
+      <div class="card">
+        <div class="card-title">
+          <span>WBS Schedule Table</span>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            onclick="window.saveToFile()"
+          >
+            💾 Save File
+          </button>
+        </div>
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 48px;">ID</th>
+                <th>Task / WBS Name</th>
+                <th>Discipline</th>
+                <th class="num-col" style="width: 50px;">Days</th>
+                <th class="num-col" style="width: 70px;">Cost (kr)</th>
+              </tr>
+            </thead>
+            <tbody id="mobile-table-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         VIEW 4: FILES & SAVED PROJECTS
+         ========================================================================= -->
+    <section id="view-files" class="mobile-view">
+      <!-- File Operations Card -->
+      <div class="card">
+        <div class="card-title">Project File Management</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Save your project to a JSON file to backup or open in the full desktop whiteboard and Gantt chart.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button
+            id="btn-save-files-view"
+            type="button"
+            class="btn btn-primary btn-block"
+          >
+            💾 Save Board to File (.json)
+          </button>
+          <button
+            id="btn-open-file"
+            type="button"
+            class="btn btn-secondary btn-block"
+          >
+            📂 Open Whiteboard File (.json)
+          </button>
+        </div>
+      </div>
+
+      <!-- Schedule Parameters -->
+      <div class="card">
+        <div class="card-title">Project Dates</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="setting-start-date">Start Date</label>
+            <input
+              id="setting-start-date"
+              type="date"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="setting-status-date">Status Date</label>
+            <input
+              id="setting-status-date"
+              type="date"
+              class="form-input"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample Projects -->
+      <div class="card">
+        <div class="card-title">Curated Sample Projects</div>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+          Load pre-built maritime, defense, or commercial project datasets:
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="justify-content: flex-start;"
+            data-load-sample="Patrol Vessel Hull Fabrication.json"
+          >
+            🚢 <strong>Patrol Vessel Hull Fabrication</strong> (24 tasks)
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="justify-content: flex-start;"
+            data-load-sample="New Garden Shed.json"
+          >
+            💡 <strong>New Garden Shed</strong> (20 tasks)
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="justify-content: flex-start;"
+            data-load-sample="Wedding Planning Project.json"
+          >
+            💍 <strong>Wedding Planning Project</strong> (18 tasks)
+          </button>
+        </div>
+      </div>
+
+      <!-- User Guide & Documentation -->
+      <div class="card">
+        <div class="card-title">Help &amp; Documentation</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+          Learn the 4-step workflow, CPM scheduling formulas, and shortcuts:
+        </p>
+        <a
+          href="index.html#guide-workflow"
+          class="btn btn-secondary btn-block"
+          style="text-decoration: none;"
+        >
+          📖 Open Interactive User Guide
+        </a>
+      </div>
+
+      <!-- Clear Board -->
+      <div class="card">
+        <div class="card-title" style="color: var(--color-danger);">Danger Zone</div>
+        <button
+          id="btn-clear-board"
+          type="button"
+          class="btn btn-danger-outline btn-block"
+        >
+          🗑️ Clear Board &amp; Start Fresh
+        </button>
+      </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="mobile-toast" class="toast-notice">Task added to Whiteboard</div>
+
+    <!-- Fixed Bottom Navigation (Thumb Zone) -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile View Navigation">
+      <button
+        type="button"
+        class="nav-tab-btn active"
+        data-view="add"
+        aria-label="Add Task"
+      >
+        <span class="tab-icon">➕</span>
+        <span>Add Task</span>
+      </button>
+      <button
+        type="button"
+        class="nav-tab-btn"
+        data-view="board"
+        aria-label="Whiteboard View"
+      >
+        <span class="tab-icon">🎨</span>
+        <span>Board</span>
+      </button>
+      <button
+        type="button"
+        class="nav-tab-btn"
+        data-view="list"
+        aria-label="Task List View"
+      >
+        <span class="tab-icon">📋</span>
+        <span>Tasks</span>
+      </button>
+      <button
+        type="button"
+        class="nav-tab-btn"
+        data-view="files"
+        aria-label="Files & Projects"
+      >
+        <span class="tab-icon">💾</span>
+        <span>Files</span>
+      </button>
+    </nav>
+
+    <!-- Engine Script -->
+    <script src="mobile.js"></script>
+  </body>
+</html>
