@@ -1,0 +1,533 @@
+{
+  "projectName": "Wedding Planning Project",
+  "savedAt": "2026-09-11T07:14:11.357Z",
+  "activeTemplate": "swimlane",
+  "showGrid": true,
+  "ganttStartDate": "2026-03-01",
+  "ganttStatusDate": "2026-05-15",
+  "trianglePriorities": {
+    "budget": 7,
+    "quality": 9,
+    "time": 9
+  },
+  "strokes": [
+    {
+      "tool": "rect",
+      "start": {
+        "x": 1080,
+        "y": 80
+      },
+      "end": {
+        "x": 1420,
+        "y": 300
+      },
+      "color": "#2563eb",
+      "width": 2,
+      "text": "Dining Area (150 Guests)"
+    },
+    {
+      "tool": "circle",
+      "start": {
+        "x": 1120,
+        "y": 120
+      },
+      "end": {
+        "x": 1180,
+        "y": 180
+      },
+      "color": "#94a3b8",
+      "width": 2,
+      "text": "T1"
+    },
+    {
+      "tool": "circle",
+      "start": {
+        "x": 1220,
+        "y": 120
+      },
+      "end": {
+        "x": 1280,
+        "y": 180
+      },
+      "color": "#94a3b8",
+      "width": 2,
+      "text": "T2"
+    },
+    {
+      "tool": "circle",
+      "start": {
+        "x": 1320,
+        "y": 120
+      },
+      "end": {
+        "x": 1380,
+        "y": 180
+      },
+      "color": "#94a3b8",
+      "width": 2,
+      "text": "T3"
+    },
+    {
+      "tool": "rect",
+      "start": {
+        "x": 1150,
+        "y": 340
+      },
+      "end": {
+        "x": 1350,
+        "y": 480
+      },
+      "color": "#16a34a",
+      "width": 2,
+      "text": "Dance Floor & Stage"
+    },
+    {
+      "tool": "diamond",
+      "start": {
+        "x": 1180,
+        "y": 520
+      },
+      "end": {
+        "x": 1320,
+        "y": 620
+      },
+      "color": "#c026d3",
+      "width": 3,
+      "text": "Ceremony Arch"
+    },
+    {
+      "tool": "arrow",
+      "start": {
+        "x": 1250,
+        "y": 630
+      },
+      "end": {
+        "x": 1250,
+        "y": 700
+      },
+      "color": "#1e293b",
+      "width": 2,
+      "text": "Aisle"
+    }
+  ],
+  "stickyNotes": [
+    {
+      "id": "note-wed-01",
+      "x": 60,
+      "y": 100,
+      "lane": "Venue & Logistics",
+      "duration": 5,
+      "plannedHours": 20,
+      "plannedCost": 5000,
+      "actualHours": 22,
+      "actualCost": 5000,
+      "progress": 100,
+      "resource": "Bride & Groom",
+      "riskFactor": 2,
+      "impactFactor": 3,
+      "weightedFactor": 6,
+      "color": "#1e293b",
+      "text": "Define Wedding Vision & Budget"
+    },
+    {
+      "id": "note-wed-02",
+      "x": 60,
+      "y": 240,
+      "lane": "Venue & Logistics",
+      "duration": 14,
+      "plannedHours": 40,
+      "plannedCost": 85000,
+      "actualHours": 38,
+      "actualCost": 85000,
+      "progress": 100,
+      "resource": "Wedding Planner",
+      "riskFactor": 3,
+      "impactFactor": 5,
+      "weightedFactor": 15,
+      "color": "#1e293b",
+      "text": "Select & Book Reception Venue"
+    },
+    {
+      "id": "note-wed-03",
+      "x": 60,
+      "y": 380,
+      "lane": "Venue & Logistics",
+      "duration": 7,
+      "plannedHours": 16,
+      "plannedCost": 18000,
+      "actualHours": 16,
+      "actualCost": 18000,
+      "progress": 100,
+      "resource": "Venue Coordinator",
+      "riskFactor": 4,
+      "impactFactor": 5,
+      "weightedFactor": 20,
+      "color": "#dc2626",
+      "text": "Outdoor Weather & Rain Contingency"
+    },
+    {
+      "id": "note-wed-04",
+      "x": 60,
+      "y": 520,
+      "lane": "Venue & Logistics",
+      "duration": 5,
+      "plannedHours": 12,
+      "plannedCost": 12000,
+      "actualHours": 0,
+      "actualCost": 0,
+      "progress": 0,
+      "resource": "Logistics Manager",
+      "riskFactor": 2,
+      "impactFactor": 3,
+      "weightedFactor": 6,
+      "color": "#1e293b",
+      "text": "Arrange Guest Shuttles & Transport"
+    },
+    {
+      "id": "note-wed-05",
+      "x": 260,
+      "y": 100,
+      "lane": "Guest Management & Invites",
+      "duration": 10,
+      "plannedHours": 25,
+      "plannedCost": 2000,
+      "actualHours": 25,
+      "actualCost": 2000,
+      "progress": 100,
+      "resource": "Bride & Groom",
+      "riskFactor": 2,
+      "impactFactor": 3,
+      "weightedFactor": 6,
+      "color": "#1e293b",
+      "text": "Compile Master Guest List"
+    },
+    {
+      "id": "note-wed-06",
+      "x": 260,
+      "y": 240,
+      "lane": "Guest Management & Invites",
+      "duration": 8,
+      "plannedHours": 16,
+      "plannedCost": 6000,
+      "actualHours": 18,
+      "actualCost": 6500,
+      "progress": 100,
+      "resource": "Stationery Designer",
+      "riskFactor": 1,
+      "impactFactor": 2,
+      "weightedFactor": 2,
+      "color": "#1e293b",
+      "text": "Design & Print Save-the-Dates"
+    },
+    {
+      "id": "note-wed-07",
+      "x": 260,
+      "y": 380,
+      "lane": "Guest Management & Invites",
+      "duration": 12,
+      "plannedHours": 20,
+      "plannedCost": 8000,
+      "actualHours": 20,
+      "actualCost": 8000,
+      "progress": 100,
+      "resource": "Bride & Groom",
+      "riskFactor": 2,
+      "impactFactor": 4,
+      "weightedFactor": 8,
+      "color": "#1e293b",
+      "text": "Send Formal Invitations & RSVP Site"
+    },
+    {
+      "id": "note-wed-08",
+      "x": 260,
+      "y": 520,
+      "lane": "Guest Management & Invites",
+      "duration": 21,
+      "plannedHours": 20,
+      "plannedCost": 2000,
+      "actualHours": 15,
+      "actualCost": 1500,
+      "progress": 75,
+      "resource": "Wedding Planner",
+      "riskFactor": 3,
+      "impactFactor": 4,
+      "weightedFactor": 12,
+      "color": "#eab308",
+      "text": "Track RSVPs & Dietary Requests"
+    },
+    {
+      "id": "note-wed-09",
+      "x": 260,
+      "y": 660,
+      "lane": "Guest Management & Invites",
+      "duration": 6,
+      "plannedHours": 14,
+      "plannedCost": 3500,
+      "actualHours": 0,
+      "actualCost": 0,
+      "progress": 0,
+      "resource": "Bride & Groom",
+      "riskFactor": 2,
+      "impactFactor": 2,
+      "weightedFactor": 4,
+      "color": "#1e293b",
+      "text": "Finalize Seating Chart & Place Cards"
+    },
+    {
+      "id": "note-wed-10",
+      "x": 460,
+      "y": 100,
+      "lane": "Catering & Hospitality",
+      "duration": 10,
+      "plannedHours": 16,
+      "plannedCost": 8000,
+      "actualHours": 18,
+      "actualCost": 9000,
+      "progress": 100,
+      "resource": "Executive Chef",
+      "riskFactor": 2,
+      "impactFactor": 4,
+      "weightedFactor": 8,
+      "color": "#1e293b",
+      "text": "Menu Tasting & Catering Contract"
+    },
+    {
+      "id": "note-wed-11",
+      "x": 460,
+      "y": 240,
+      "lane": "Catering & Hospitality",
+      "duration": 7,
+      "plannedHours": 10,
+      "plannedCost": 9500,
+      "actualHours": 10,
+      "actualCost": 9500,
+      "progress": 100,
+      "resource": "Pastry Chef",
+      "riskFactor": 2,
+      "impactFactor": 3,
+      "weightedFactor": 6,
+      "color": "#1e293b",
+      "text": "Wedding Cake Design & Tasting"
+    },
+    {
+      "id": "note-wed-12",
+      "x": 460,
+      "y": 380,
+      "lane": "Catering & Hospitality",
+      "duration": 6,
+      "plannedHours": 12,
+      "plannedCost": 32000,
+      "actualHours": 10,
+      "actualCost": 32000,
+      "progress": 60,
+      "resource": "Sommelier",
+      "riskFactor": 2,
+      "impactFactor": 4,
+      "weightedFactor": 8,
+      "color": "#eab308",
+      "text": "Beverage Package & Bar Contract"
+    },
+    {
+      "id": "note-wed-13",
+      "x": 460,
+      "y": 520,
+      "lane": "Catering & Hospitality",
+      "duration": 2,
+      "plannedHours": 40,
+      "plannedCost": 75000,
+      "actualHours": 0,
+      "actualCost": 0,
+      "progress": 0,
+      "resource": "Catering Staff",
+      "riskFactor": 3,
+      "impactFactor": 5,
+      "weightedFactor": 15,
+      "color": "#1e293b",
+      "text": "Final Headcount & Banquet Service"
+    },
+    {
+      "id": "note-wed-14",
+      "x": 660,
+      "y": 100,
+      "lane": "Attire & Beauty",
+      "duration": 20,
+      "plannedHours": 30,
+      "plannedCost": 42000,
+      "actualHours": 34,
+      "actualCost": 45000,
+      "progress": 100,
+      "resource": "Bridal Boutique",
+      "riskFactor": 3,
+      "impactFactor": 4,
+      "weightedFactor": 12,
+      "color": "#1e293b",
+      "text": "Wedding Dress & Tuxedo Selection"
+    },
+    {
+      "id": "note-wed-15",
+      "x": 660,
+      "y": 240,
+      "lane": "Attire & Beauty",
+      "duration": 14,
+      "plannedHours": 15,
+      "plannedCost": 6500,
+      "actualHours": 10,
+      "actualCost": 4000,
+      "progress": 50,
+      "resource": "Master Tailor",
+      "riskFactor": 3,
+      "impactFactor": 3,
+      "weightedFactor": 9,
+      "color": "#eab308",
+      "text": "Dress Alterations & Fitting Sessions"
+    },
+    {
+      "id": "note-wed-16",
+      "x": 860,
+      "y": 100,
+      "lane": "Photo & Entertainment",
+      "duration": 12,
+      "plannedHours": 20,
+      "plannedCost": 35000,
+      "actualHours": 20,
+      "actualCost": 35000,
+      "progress": 100,
+      "resource": "Lead Photographer",
+      "riskFactor": 2,
+      "impactFactor": 4,
+      "weightedFactor": 8,
+      "color": "#1e293b",
+      "text": "Book Photographer & Videographer"
+    },
+    {
+      "id": "note-wed-17",
+      "x": 860,
+      "y": 240,
+      "lane": "Photo & Entertainment",
+      "duration": 8,
+      "plannedHours": 16,
+      "plannedCost": 22000,
+      "actualHours": 12,
+      "actualCost": 15000,
+      "progress": 50,
+      "resource": "Band Leader",
+      "riskFactor": 2,
+      "impactFactor": 4,
+      "weightedFactor": 8,
+      "color": "#eab308",
+      "text": "Hire Live Band & Sound Equipment"
+    },
+    {
+      "id": "note-wed-18",
+      "x": 860,
+      "y": 520,
+      "lane": "Venue & Logistics",
+      "duration": 2,
+      "plannedHours": 30,
+      "plannedCost": 15000,
+      "actualHours": 0,
+      "actualCost": 0,
+      "progress": 0,
+      "resource": "Wedding Planner",
+      "riskFactor": 2,
+      "impactFactor": 5,
+      "weightedFactor": 10,
+      "color": "#16a34a",
+      "text": "Wedding Rehearsal & Big Day Execution"
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "note-wed-01",
+      "to": "note-wed-02"
+    },
+    {
+      "from": "note-wed-02",
+      "to": "note-wed-03"
+    },
+    {
+      "from": "note-wed-01",
+      "to": "note-wed-05"
+    },
+    {
+      "from": "note-wed-05",
+      "to": "note-wed-06"
+    },
+    {
+      "from": "note-wed-02",
+      "to": "note-wed-07"
+    },
+    {
+      "from": "note-wed-06",
+      "to": "note-wed-07"
+    },
+    {
+      "from": "note-wed-07",
+      "to": "note-wed-08"
+    },
+    {
+      "from": "note-wed-08",
+      "to": "note-wed-09"
+    },
+    {
+      "from": "note-wed-02",
+      "to": "note-wed-10"
+    },
+    {
+      "from": "note-wed-10",
+      "to": "note-wed-11"
+    },
+    {
+      "from": "note-wed-10",
+      "to": "note-wed-12"
+    },
+    {
+      "from": "note-wed-08",
+      "to": "note-wed-13"
+    },
+    {
+      "from": "note-wed-12",
+      "to": "note-wed-13"
+    },
+    {
+      "from": "note-wed-01",
+      "to": "note-wed-14"
+    },
+    {
+      "from": "note-wed-14",
+      "to": "note-wed-15"
+    },
+    {
+      "from": "note-wed-02",
+      "to": "note-wed-16"
+    },
+    {
+      "from": "note-wed-02",
+      "to": "note-wed-17"
+    },
+    {
+      "from": "note-wed-03",
+      "to": "note-wed-18"
+    },
+    {
+      "from": "note-wed-04",
+      "to": "note-wed-18"
+    },
+    {
+      "from": "note-wed-09",
+      "to": "note-wed-18"
+    },
+    {
+      "from": "note-wed-13",
+      "to": "note-wed-18"
+    },
+    {
+      "from": "note-wed-15",
+      "to": "note-wed-18"
+    },
+    {
+      "from": "note-wed-17",
+      "to": "note-wed-18"
+    }
+  ]
+}

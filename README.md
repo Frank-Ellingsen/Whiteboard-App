@@ -86,8 +86,6 @@ Whiteboard_app/
 ├── Dockerfile                   # Production container image (Alpine Nginx)
 ├── docker-compose.yml           # One-command container orchestration
 ├── nginx.conf                   # Production Nginx web server configuration
-├── Wedding Planning Project.json# Wedding planning sample dataset (root copy)
-├── New Garden Shed.json         # Garden shed sample dataset (root copy)
 ├── assets/                      # Icons, favicons, and workflow guide assets
 │   ├── favicon.svg              # Application vector icon
 │   └── Whiteboard App.png       # 4-Step Brainstorm to Gantt infographic

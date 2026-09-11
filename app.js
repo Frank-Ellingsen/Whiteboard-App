@@ -1490,12 +1490,14 @@ document.querySelectorAll('.template-btn').forEach((btn) => {
 });
 
 // Utility Toggles
-gridToggleBtn.addEventListener('click', () => {
-  showGrid = !showGrid;
-  gridToggleBtn.classList.toggle('active', showGrid);
-  drawAll();
-  announceA11y(`Gridlines toggled ${showGrid ? 'on' : 'off'}`);
-});
+if (gridToggleBtn) {
+  gridToggleBtn.addEventListener('click', () => {
+    showGrid = !showGrid;
+    gridToggleBtn.classList.toggle('active', showGrid);
+    drawAll();
+    announceA11y(`Gridlines toggled ${showGrid ? 'on' : 'off'}`);
+  });
+}
 
 function clearEntireCanvas(isUndoRedo = false) {
   if (!isUndoRedo) {
@@ -2365,6 +2367,429 @@ async function loadDemoProject() {
 }
 window.loadDemoProject = loadDemoProject;
 
+const DEFAULT_WEDDING_PROJECT = {
+  projectName: 'Wedding Planning Project',
+  savedAt: '2026-05-15T12:00:00.000Z',
+  activeTemplate: 'swimlane',
+  showGrid: true,
+  ganttStartDate: '2026-03-01',
+  ganttStatusDate: '2026-05-15',
+  trianglePriorities: {
+    budget: 7,
+    quality: 9,
+    time: 9,
+  },
+  strokes: [
+    {
+      tool: 'rect',
+      start: { x: 1080, y: 80 },
+      end: { x: 1420, y: 300 },
+      color: '#2563eb',
+      width: 2,
+      text: 'Dining Area (150 Guests)',
+    },
+    {
+      tool: 'circle',
+      start: { x: 1120, y: 120 },
+      end: { x: 1180, y: 180 },
+      color: '#94a3b8',
+      width: 2,
+      text: 'T1',
+    },
+    {
+      tool: 'circle',
+      start: { x: 1220, y: 120 },
+      end: { x: 1280, y: 180 },
+      color: '#94a3b8',
+      width: 2,
+      text: 'T2',
+    },
+    {
+      tool: 'circle',
+      start: { x: 1320, y: 120 },
+      end: { x: 1380, y: 180 },
+      color: '#94a3b8',
+      width: 2,
+      text: 'T3',
+    },
+    {
+      tool: 'rect',
+      start: { x: 1150, y: 340 },
+      end: { x: 1350, y: 480 },
+      color: '#16a34a',
+      width: 2,
+      text: 'Dance Floor & Stage',
+    },
+    {
+      tool: 'diamond',
+      start: { x: 1180, y: 520 },
+      end: { x: 1320, y: 620 },
+      color: '#c026d3',
+      width: 3,
+      text: 'Ceremony Arch',
+    },
+    {
+      tool: 'arrow',
+      start: { x: 1250, y: 630 },
+      end: { x: 1250, y: 700 },
+      color: '#1e293b',
+      width: 2,
+      text: 'Aisle',
+    },
+  ],
+  stickyNotes: [
+    {
+      id: 'note-wed-01',
+      x: 60,
+      y: 100,
+      lane: 'Venue & Logistics',
+      duration: 5,
+      plannedHours: 20,
+      plannedCost: 5000,
+      actualHours: 22,
+      actualCost: 5000,
+      progress: 100,
+      resource: 'Bride & Groom',
+      riskFactor: 2,
+      impactFactor: 3,
+      weightedFactor: 6,
+      color: '#1e293b',
+      text: 'Define Wedding Vision & Budget',
+    },
+    {
+      id: 'note-wed-02',
+      x: 60,
+      y: 240,
+      lane: 'Venue & Logistics',
+      duration: 14,
+      plannedHours: 40,
+      plannedCost: 85000,
+      actualHours: 38,
+      actualCost: 85000,
+      progress: 100,
+      resource: 'Wedding Planner',
+      riskFactor: 3,
+      impactFactor: 5,
+      weightedFactor: 15,
+      color: '#1e293b',
+      text: 'Select & Book Reception Venue',
+    },
+    {
+      id: 'note-wed-03',
+      x: 60,
+      y: 380,
+      lane: 'Venue & Logistics',
+      duration: 7,
+      plannedHours: 16,
+      plannedCost: 18000,
+      actualHours: 16,
+      actualCost: 18000,
+      progress: 100,
+      resource: 'Venue Coordinator',
+      riskFactor: 4,
+      impactFactor: 5,
+      weightedFactor: 20,
+      color: '#dc2626',
+      text: 'Outdoor Weather & Rain Contingency',
+    },
+    {
+      id: 'note-wed-04',
+      x: 60,
+      y: 520,
+      lane: 'Venue & Logistics',
+      duration: 5,
+      plannedHours: 12,
+      plannedCost: 12000,
+      actualHours: 0,
+      actualCost: 0,
+      progress: 0,
+      resource: 'Logistics Manager',
+      riskFactor: 2,
+      impactFactor: 3,
+      weightedFactor: 6,
+      color: '#1e293b',
+      text: 'Arrange Guest Shuttles & Transport',
+    },
+    {
+      id: 'note-wed-05',
+      x: 260,
+      y: 100,
+      lane: 'Guest Management & Invites',
+      duration: 10,
+      plannedHours: 25,
+      plannedCost: 2000,
+      actualHours: 25,
+      actualCost: 2000,
+      progress: 100,
+      resource: 'Bride & Groom',
+      riskFactor: 2,
+      impactFactor: 3,
+      weightedFactor: 6,
+      color: '#1e293b',
+      text: 'Compile Master Guest List',
+    },
+    {
+      id: 'note-wed-06',
+      x: 260,
+      y: 240,
+      lane: 'Guest Management & Invites',
+      duration: 8,
+      plannedHours: 16,
+      plannedCost: 6000,
+      actualHours: 18,
+      actualCost: 6500,
+      progress: 100,
+      resource: 'Stationery Designer',
+      riskFactor: 1,
+      impactFactor: 2,
+      weightedFactor: 2,
+      color: '#1e293b',
+      text: 'Design & Print Save-the-Dates',
+    },
+    {
+      id: 'note-wed-07',
+      x: 260,
+      y: 380,
+      lane: 'Guest Management & Invites',
+      duration: 12,
+      plannedHours: 20,
+      plannedCost: 8000,
+      actualHours: 20,
+      actualCost: 8000,
+      progress: 100,
+      resource: 'Bride & Groom',
+      riskFactor: 2,
+      impactFactor: 4,
+      weightedFactor: 8,
+      color: '#1e293b',
+      text: 'Send Formal Invitations & RSVP Site',
+    },
+    {
+      id: 'note-wed-08',
+      x: 260,
+      y: 520,
+      lane: 'Guest Management & Invites',
+      duration: 21,
+      plannedHours: 20,
+      plannedCost: 2000,
+      actualHours: 15,
+      actualCost: 1500,
+      progress: 75,
+      resource: 'Wedding Planner',
+      riskFactor: 3,
+      impactFactor: 4,
+      weightedFactor: 12,
+      color: '#eab308',
+      text: 'Track RSVPs & Dietary Requests',
+    },
+    {
+      id: 'note-wed-09',
+      x: 260,
+      y: 660,
+      lane: 'Guest Management & Invites',
+      duration: 6,
+      plannedHours: 14,
+      plannedCost: 3500,
+      actualHours: 0,
+      actualCost: 0,
+      progress: 0,
+      resource: 'Bride & Groom',
+      riskFactor: 2,
+      impactFactor: 2,
+      weightedFactor: 4,
+      color: '#1e293b',
+      text: 'Finalize Seating Chart & Place Cards',
+    },
+    {
+      id: 'note-wed-10',
+      x: 460,
+      y: 100,
+      lane: 'Catering & Hospitality',
+      duration: 10,
+      plannedHours: 16,
+      plannedCost: 8000,
+      actualHours: 18,
+      actualCost: 9000,
+      progress: 100,
+      resource: 'Executive Chef',
+      riskFactor: 2,
+      impactFactor: 4,
+      weightedFactor: 8,
+      color: '#1e293b',
+      text: 'Menu Tasting & Catering Contract',
+    },
+    {
+      id: 'note-wed-11',
+      x: 460,
+      y: 240,
+      lane: 'Catering & Hospitality',
+      duration: 7,
+      plannedHours: 10,
+      plannedCost: 9500,
+      actualHours: 10,
+      actualCost: 9500,
+      progress: 100,
+      resource: 'Pastry Chef',
+      riskFactor: 2,
+      impactFactor: 3,
+      weightedFactor: 6,
+      color: '#1e293b',
+      text: 'Wedding Cake Design & Tasting',
+    },
+    {
+      id: 'note-wed-12',
+      x: 460,
+      y: 380,
+      lane: 'Catering & Hospitality',
+      duration: 6,
+      plannedHours: 12,
+      plannedCost: 32000,
+      actualHours: 10,
+      actualCost: 32000,
+      progress: 60,
+      resource: 'Sommelier',
+      riskFactor: 2,
+      impactFactor: 4,
+      weightedFactor: 8,
+      color: '#eab308',
+      text: 'Beverage Package & Bar Contract',
+    },
+    {
+      id: 'note-wed-13',
+      x: 460,
+      y: 520,
+      lane: 'Catering & Hospitality',
+      duration: 2,
+      plannedHours: 40,
+      plannedCost: 75000,
+      actualHours: 0,
+      actualCost: 0,
+      progress: 0,
+      resource: 'Catering Staff',
+      riskFactor: 3,
+      impactFactor: 5,
+      weightedFactor: 15,
+      color: '#1e293b',
+      text: 'Final Headcount & Banquet Service',
+    },
+    {
+      id: 'note-wed-14',
+      x: 660,
+      y: 100,
+      lane: 'Attire & Beauty',
+      duration: 20,
+      plannedHours: 30,
+      plannedCost: 42000,
+      actualHours: 34,
+      actualCost: 45000,
+      progress: 100,
+      resource: 'Bridal Boutique',
+      riskFactor: 3,
+      impactFactor: 4,
+      weightedFactor: 12,
+      color: '#1e293b',
+      text: 'Wedding Dress & Tuxedo Selection',
+    },
+    {
+      id: 'note-wed-15',
+      x: 660,
+      y: 240,
+      lane: 'Attire & Beauty',
+      duration: 14,
+      plannedHours: 15,
+      plannedCost: 6500,
+      actualHours: 10,
+      actualCost: 4000,
+      progress: 50,
+      resource: 'Master Tailor',
+      riskFactor: 3,
+      impactFactor: 3,
+      weightedFactor: 9,
+      color: '#eab308',
+      text: 'Dress Alterations & Fitting Sessions',
+    },
+    {
+      id: 'note-wed-16',
+      x: 860,
+      y: 100,
+      lane: 'Photo & Entertainment',
+      duration: 12,
+      plannedHours: 20,
+      plannedCost: 35000,
+      actualHours: 20,
+      actualCost: 35000,
+      progress: 100,
+      resource: 'Lead Photographer',
+      riskFactor: 2,
+      impactFactor: 4,
+      weightedFactor: 8,
+      color: '#1e293b',
+      text: 'Book Photographer & Videographer',
+    },
+    {
+      id: 'note-wed-17',
+      x: 860,
+      y: 240,
+      lane: 'Photo & Entertainment',
+      duration: 8,
+      plannedHours: 16,
+      plannedCost: 22000,
+      actualHours: 12,
+      actualCost: 15000,
+      progress: 50,
+      resource: 'Band Leader',
+      riskFactor: 2,
+      impactFactor: 4,
+      weightedFactor: 8,
+      color: '#eab308',
+      text: 'Hire Live Band & Sound Equipment',
+    },
+    {
+      id: 'note-wed-18',
+      x: 860,
+      y: 520,
+      lane: 'Venue & Logistics',
+      duration: 2,
+      plannedHours: 30,
+      plannedCost: 15000,
+      actualHours: 0,
+      actualCost: 0,
+      progress: 0,
+      resource: 'Wedding Planner',
+      riskFactor: 2,
+      impactFactor: 5,
+      weightedFactor: 10,
+      color: '#16a34a',
+      text: 'Wedding Rehearsal & Big Day Execution',
+    },
+  ],
+  dependencies: [
+    { from: 'note-wed-01', to: 'note-wed-02' },
+    { from: 'note-wed-02', to: 'note-wed-03' },
+    { from: 'note-wed-01', to: 'note-wed-05' },
+    { from: 'note-wed-05', to: 'note-wed-06' },
+    { from: 'note-wed-02', to: 'note-wed-07' },
+    { from: 'note-wed-06', to: 'note-wed-07' },
+    { from: 'note-wed-07', to: 'note-wed-08' },
+    { from: 'note-wed-08', to: 'note-wed-09' },
+    { from: 'note-wed-02', to: 'note-wed-10' },
+    { from: 'note-wed-10', to: 'note-wed-11' },
+    { from: 'note-wed-10', to: 'note-wed-12' },
+    { from: 'note-wed-08', to: 'note-wed-13' },
+    { from: 'note-wed-12', to: 'note-wed-13' },
+    { from: 'note-wed-01', to: 'note-wed-14' },
+    { from: 'note-wed-14', to: 'note-wed-15' },
+    { from: 'note-wed-02', to: 'note-wed-16' },
+    { from: 'note-wed-02', to: 'note-wed-17' },
+    { from: 'note-wed-03', to: 'note-wed-18' },
+    { from: 'note-wed-04', to: 'note-wed-18' },
+    { from: 'note-wed-09', to: 'note-wed-18' },
+    { from: 'note-wed-13', to: 'note-wed-18' },
+    { from: 'note-wed-15', to: 'note-wed-18' },
+    { from: 'note-wed-17', to: 'note-wed-18' },
+  ],
+};
+
 async function loadWeddingProject() {
   try {
     const res = await fetch('./samples/Wedding Planning Project.json');
@@ -2374,15 +2799,43 @@ async function loadWeddingProject() {
       announceA11y('Loaded Wedding Planning Project.');
       return;
     }
-  } catch (e) {
-    console.error('Failed to load wedding project from samples:', e);
-  }
-  announceA11y('Could not load Wedding Planning Project.');
+  } catch (e) {}
+  try {
+    const res2 = await fetch('./Wedding Planning Project.json');
+    if (res2.ok) {
+      const data2 = await res2.json();
+      applyBoardState(data2, 'Wedding Planning Project.json');
+      announceA11y('Loaded Wedding Planning Project.');
+      return;
+    }
+  } catch (e) {}
+  applyBoardState(DEFAULT_WEDDING_PROJECT, 'Wedding Planning Project.json');
+  announceA11y('Loaded Wedding Planning Project.');
 }
 window.loadWeddingProject = loadWeddingProject;
 
 function loadInitialBoardState() {
   try {
+    // Seed Wedding Planning Project into savedProjects in localStorage if not already present
+    try {
+      const existingSaved = JSON.parse(
+        localStorage.getItem(BOARD_STORAGE_KEY) || '[]'
+      );
+      if (
+        !existingSaved.some(
+          (p) =>
+            (p.projectName || '').toLowerCase() ===
+            'wedding planning project'
+        )
+      ) {
+        existingSaved.unshift(DEFAULT_WEDDING_PROJECT);
+        localStorage.setItem(
+          BOARD_STORAGE_KEY,
+          JSON.stringify(existingSaved)
+        );
+      }
+    } catch (e) {}
+
     const autosave = localStorage.getItem('whiteboard-autosave');
     if (autosave) {
       const boardState = JSON.parse(autosave);
@@ -2390,7 +2843,8 @@ function loadInitialBoardState() {
         boardState &&
         typeof boardState === 'object' &&
         Array.isArray(boardState.stickyNotes) &&
-        boardState.stickyNotes.length > 0
+        boardState.stickyNotes.length > 0 &&
+        boardState.projectName !== 'New Garden Shed'
       ) {
         applyBoardState(boardState);
         return;
@@ -2403,23 +2857,145 @@ function loadInitialBoardState() {
       const lastProjectName = localStorage.getItem('whiteboard-last-project');
       const projectToLoad =
         savedProjects.find((p) => p.projectName === lastProjectName) ||
+        savedProjects.find((p) => p.projectName === 'Wedding Planning Project') ||
         savedProjects[savedProjects.length - 1];
       if (
         projectToLoad &&
         Array.isArray(projectToLoad.stickyNotes) &&
-        projectToLoad.stickyNotes.length > 0
+        projectToLoad.stickyNotes.length > 0 &&
+        projectToLoad.projectName !== 'New Garden Shed'
       ) {
         applyBoardState(projectToLoad);
         return;
       }
     }
-    // Default fallback: Load Garden Shed demo project so swimlane flowchart is immediately visible
-    applyBoardState(DEFAULT_DEMO_PROJECT, 'New Garden Shed.json');
+    // Default active project: Wedding Planning Project
+    applyBoardState(DEFAULT_WEDDING_PROJECT, 'Wedding Planning Project.json');
   } catch (e) {
     console.error('Error loading initial board state:', e);
-    applyBoardState(DEFAULT_DEMO_PROJECT, 'New Garden Shed.json');
+    applyBoardState(DEFAULT_WEDDING_PROJECT, 'Wedding Planning Project.json');
   }
 }
+
+// -------------------------------------------------------------
+// Saved Projects & Templates Modal Manager
+// -------------------------------------------------------------
+function openSavedProjectsDialog() {
+  const dialog = document.getElementById('saved-projects-dialog');
+  if (!dialog) return;
+  renderSavedProjectsList();
+  dialog.showModal();
+}
+window.openSavedProjectsDialog = openSavedProjectsDialog;
+
+function closeSavedProjectsDialog() {
+  const dialog = document.getElementById('saved-projects-dialog');
+  if (dialog) dialog.close();
+}
+window.closeSavedProjectsDialog = closeSavedProjectsDialog;
+
+function triggerProjectFileInput() {
+  const input = document.getElementById('project-file-input');
+  if (input) {
+    closeSavedProjectsDialog();
+    input.click();
+  }
+}
+window.triggerProjectFileInput = triggerProjectFileInput;
+
+function renderSavedProjectsList() {
+  const container = document.getElementById('saved-projects-container');
+  const badge = document.getElementById('saved-projects-badge');
+  if (!container) return;
+  let savedProjects = [];
+  try {
+    savedProjects = JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY) || '[]');
+  } catch (e) {
+    savedProjects = [];
+  }
+
+  if (badge) badge.innerText = savedProjects.length;
+
+  if (savedProjects.length === 0) {
+    container.innerHTML =
+      '<div style="font-size: 0.74rem; color: var(--text-muted); padding: 10px 12px; background: #f8fafc; border: 1px dashed var(--border-light); border-radius: 4px; text-align: center;">No custom saved projects in local storage yet. Click <strong>Save Board</strong> in the top bar to save your active board.</div>';
+    return;
+  }
+
+  const currentProjectName = (projectNameInput?.value || '').trim().toLowerCase();
+  let html = '<div style="display: flex; flex-direction: column; gap: 6px;">';
+  savedProjects.forEach((proj, idx) => {
+    const isCurrent = (proj.projectName || '').trim().toLowerCase() === currentProjectName;
+    const noteCount = Array.isArray(proj.stickyNotes) ? proj.stickyNotes.length : 0;
+    const dateStr = proj.savedAt ? new Date(proj.savedAt).toLocaleDateString() : '';
+    html += `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: ${isCurrent ? '#f0fdf4' : '#ffffff'}; border: 1px solid ${isCurrent ? '#86efac' : 'var(--border-light)'}; border-radius: 5px; transition: all 0.15s ease;">
+        <div style="min-width: 0; flex: 1;">
+          <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ${escapeHtml(proj.projectName || 'Untitled Project')}
+            ${isCurrent ? '<span style="font-size: 0.65rem; color: #16a34a; font-weight: 600; margin-left: 6px; background: #dcfce7; padding: 1px 5px; border-radius: 3px;">Active</span>' : ''}
+          </div>
+          <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 1px;">
+            ${noteCount} sticky notes • Template: ${escapeHtml(proj.activeTemplate || 'swimlane')}${dateStr ? ' • Saved: ' + dateStr : ''}
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-left: 12px;">
+          <button type="button" class="primary-btn" style="padding: 3px 12px; font-size: 0.72rem;" onclick="loadSavedProjectByIndex(${idx})">Open</button>
+          <button type="button" class="secondary-btn" style="padding: 3px 6px; font-size: 0.72rem; color: var(--color-red);" title="Delete saved project" onclick="deleteSavedProjectByIndex(${idx})">🗑️</button>
+        </div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+window.renderSavedProjectsList = renderSavedProjectsList;
+
+function loadSavedProjectByIndex(idx) {
+  try {
+    const savedProjects = JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY) || '[]');
+    if (savedProjects[idx]) {
+      applyBoardState(savedProjects[idx]);
+      closeSavedProjectsDialog();
+      announceA11y(`Loaded saved project ${savedProjects[idx].projectName}.`);
+    }
+  } catch (e) {
+    console.error('Failed to load project by index:', e);
+  }
+}
+window.loadSavedProjectByIndex = loadSavedProjectByIndex;
+
+function deleteSavedProjectByIndex(idx) {
+  try {
+    const savedProjects = JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY) || '[]');
+    if (savedProjects[idx]) {
+      const name = savedProjects[idx].projectName;
+      savedProjects.splice(idx, 1);
+      localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(savedProjects));
+      renderSavedProjectsList();
+      announceA11y(`Deleted project ${name}.`);
+    }
+  } catch (e) {
+    console.error('Failed to delete project:', e);
+  }
+}
+window.deleteSavedProjectByIndex = deleteSavedProjectByIndex;
+
+async function loadPatrolVesselProject() {
+  try {
+    const res = await fetch('./samples/Patrol Vessel Hull Fabrication.json');
+    if (res.ok) {
+      const data = await res.json();
+      applyBoardState(data, 'Patrol Vessel Hull Fabrication.json');
+      announceA11y('Loaded Patrol Vessel Hull Fabrication project.');
+      closeSavedProjectsDialog();
+      return;
+    }
+  } catch (e) {
+    console.error('Failed to load Patrol Vessel project:', e);
+  }
+}
+window.loadPatrolVesselProject = loadPatrolVesselProject;
 
 function clearBoardForImport(preserveHistory = false) {
   cancelTouchLink();
@@ -2522,18 +3098,20 @@ function applyBoardState(boardState, fileName = '', preserveHistory = false) {
     boardState.projectName ||
     fileName.replace(/\.json$/i, '') ||
     'Untitled Project';
-  tempNameSpan.innerText =
-    {
-      blank: 'Blank Grid',
-      swimlane: 'Vertical Swimlanes',
-      scurve: 'S-Curve',
-      matrix: 'Risk Matrix',
-      gantt: 'Gantt Schedule',
-    }[activeTemplate] || 'Vertical Swimlanes';
+  if (tempNameSpan) {
+    tempNameSpan.innerText =
+      {
+        blank: 'Blank Grid',
+        swimlane: 'Vertical Swimlanes',
+        scurve: 'S-Curve',
+        matrix: 'Risk Matrix',
+        gantt: 'Gantt Schedule',
+      }[activeTemplate] || 'Vertical Swimlanes';
+  }
   document.querySelectorAll('.template-btn').forEach((b) => {
     b.classList.toggle('active', b.id === `tpl-${activeTemplate}`);
   });
-  gridToggleBtn.classList.toggle('active', showGrid);
+  if (gridToggleBtn) gridToggleBtn.classList.toggle('active', showGrid);
   switchView('canvas');
   resizeCanvas();
   updateSidebarSwimlanes();
@@ -2568,8 +3146,10 @@ if (projectNameInput) {
   });
 }
 
-if (openProjectBtn && projectFileInput) {
-  openProjectBtn.addEventListener('click', () => projectFileInput.click());
+if (openProjectBtn) {
+  openProjectBtn.addEventListener('click', () => openSavedProjectsDialog());
+}
+if (projectFileInput) {
   projectFileInput.addEventListener('change', () => {
     const [file] = projectFileInput.files;
     if (file) openBoardFile(file);
@@ -2986,13 +3566,13 @@ function updateSidebarSwimlanes() {
         </svg>
         <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">No tasks found on the board</div>
         <div style="font-size: 0.8rem; max-width: 420px;">Create sticky notes on the Whiteboard to generate the vertical swimlane flowchart, or load the demo project to view the flowchart immediately.</div>
-        <button type="button" class="btn-load-demo-empty" onclick="loadDemoProject()" title="Load Garden Shed demo project with 20 tasks and swimlanes">
-          ✨ Load Demo Project (Garden Shed)
+        <button type="button" class="btn-load-demo-empty" onclick="loadWeddingProject()" title="Load Wedding Planning project with 18 tasks and swimlanes">
+          💍 Load Wedding Planning Project
         </button>
       </div>
     `;
     tbody.innerHTML =
-      '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No sticky notes found. <button type="button" class="btn-load-demo-empty" style="margin-left: 10px; padding: 4px 10px; font-size: 0.74rem;" onclick="loadDemoProject()">Load Demo Project</button></td></tr>';
+      '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No sticky notes found. <button type="button" class="btn-load-demo-empty" style="margin-left: 10px; padding: 4px 10px; font-size: 0.74rem;" onclick="loadWeddingProject()">Load Wedding Plan</button></td></tr>';
     return;
   }
 
@@ -6717,7 +7297,7 @@ viewTabs.forEach((tab, index) => {
 loadInitialBoardState();
 if (stickyNotes.length === 0 && strokes.length === 0) {
   switchView('canvas');
-  gridToggleBtn.classList.add('active');
+  if (gridToggleBtn) gridToggleBtn.classList.add('active');
 }
 strokeWidthInput.style.accentColor = currentColor;
 strokeValueSpan.style.color = currentColor;

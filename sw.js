@@ -1,5 +1,5 @@
 // Project Controls Whiteboard - Offline Service Worker (Network-first with offline fallback)
-const CACHE_NAME = 'pm-whiteboard-v5';
+const CACHE_NAME = 'pm-whiteboard-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
