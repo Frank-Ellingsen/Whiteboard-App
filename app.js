@@ -320,7 +320,7 @@ function drawGanttTemplate() {
   ctx.strokeStyle = '#e2e8f0';
   ctx.lineWidth = 1;
 
-  // Columns (Quarters / Timeline)
+  // Columns (Quarters / Timeline - Tufte-style header ticks without distracting vertical gridlines)
   ctx.fillStyle = '#0f172a';
   ctx.font = '600 11px Inter';
   ctx.textAlign = 'center';
@@ -330,12 +330,12 @@ function drawGanttTemplate() {
   for (let i = 0; i <= 4; i++) {
     const x = padLeft + i * colWidth;
     ctx.beginPath();
-    ctx.moveTo(x, padTop - 15);
-    ctx.lineTo(x, h - padBottom);
+    ctx.moveTo(x, padTop - 10);
+    ctx.lineTo(x, padTop);
     ctx.stroke();
 
     if (i < 4) {
-      ctx.fillText(quarters[i], x + colWidth / 2, padTop - 20);
+      ctx.fillText(quarters[i], x + colWidth / 2, padTop - 16);
     }
   }
 
@@ -4380,36 +4380,203 @@ function updateGanttActuals(noteId, actualHours, actualCost, progress) {
   announceA11y('Task actuals and progress updated.');
 }
 
-function getScheduleRAG(endDate, statusDate) {
-  const daysFromStatus = Math.ceil(
-    (endDate.getTime() - statusDate.getTime()) / (24 * 60 * 60 * 1000)
-  );
-  if (daysFromStatus <= 0)
-    return { level: 'green', label: 'GREEN', daysFromStatus };
-  if (daysFromStatus <= 7)
-    return { level: 'amber', label: 'AMBER', daysFromStatus };
-  return { level: 'red', label: 'RED', daysFromStatus };
+function getScheduleRAG(task, statusDate) {
+  if (!task) return { level: 'standard', label: 'PLANNED', daysFromStatus: 0, statusText: 'Planned' };
+  
+  const progress = Math.min(100, Math.max(0, Number(task.progress) || 0));
+  if (progress >= 100) {
+    return { level: 'completed', label: 'COMPLETE', daysFromStatus: 0, statusText: '100% Complete' };
+  }
+
+  const start = new Date(task.start);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(task.end);
+  end.setHours(23, 59, 59, 999);
+  const status = new Date(statusDate);
+  status.setHours(12, 0, 0, 0);
+
+  const oneDayMs = 24 * 60 * 60 * 1000;
+
+  // If task was planned to finish before the status date and is not completed
+  if (end.getTime() < status.getTime()) {
+    const daysOverdue = Math.max(1, Math.round((status.getTime() - end.getTime()) / oneDayMs));
+    return {
+      level: 'red',
+      label: 'OVERDUE',
+      daysFromStatus: daysOverdue,
+      statusText: `${daysOverdue} day(s) overdue (Progress: ${progress}%)`,
+    };
+  }
+
+  // If task is active on the status date
+  if (status.getTime() >= start.getTime() && status.getTime() <= end.getTime()) {
+    const totalDuration = Math.max(1, Math.round((end.getTime() - start.getTime()) / oneDayMs) + 1);
+    const elapsedDays = Math.max(1, Math.round((status.getTime() - start.getTime()) / oneDayMs) + 1);
+    const plannedProgress = Math.min(100, Math.round((elapsedDays / totalDuration) * 100));
+    const variance = progress - plannedProgress;
+
+    if (variance >= -5) {
+      return {
+        level: 'on-track',
+        label: 'ON TRACK',
+        daysFromStatus: 0,
+        statusText: `Active · On track (${progress}% vs ${plannedProgress}% expected)`,
+      };
+    } else if (variance >= -20) {
+      return {
+        level: 'amber',
+        label: 'AT RISK',
+        daysFromStatus: 0,
+        statusText: `Active · Variance ${variance}% (${progress}% vs ${plannedProgress}% expected)`,
+      };
+    } else {
+      return {
+        level: 'red',
+        label: 'DELAYED',
+        daysFromStatus: 0,
+        statusText: `Active · Significantly delayed (${progress}% vs ${plannedProgress}% expected)`,
+      };
+    }
+  }
+
+  // Future scheduled task
+  return {
+    level: 'standard',
+    label: 'PLANNED',
+    daysFromStatus: 0,
+    statusText: `Planned start: ${formatScheduleDate(task.start)}`,
+  };
+}
+
+function getOverallProjectRAG(schedule, statusDate) {
+  if (!schedule || schedule.length === 0) {
+    return { level: 'amber', label: 'Schedule Status: —' };
+  }
+
+  let criticalDelayed = 0;
+  let nonCriticalDelayed = 0;
+  let totalOverdue = 0;
+
+  schedule.forEach((task) => {
+    const rag = getScheduleRAG(task, statusDate);
+    if (rag.level === 'red') {
+      totalOverdue++;
+      if (task.isCritical) criticalDelayed++;
+      else nonCriticalDelayed++;
+    } else if (rag.level === 'amber') {
+      if (task.isCritical) criticalDelayed++;
+      else nonCriticalDelayed++;
+    }
+  });
+
+  if (criticalDelayed > 0) {
+    return {
+      level: 'red',
+      label: `Schedule Status: RED · Critical Path Impact (${criticalDelayed} critical task(s) delayed)`,
+    };
+  }
+  if (nonCriticalDelayed > 0 || totalOverdue > 0) {
+    return {
+      level: 'amber',
+      label: `Schedule Status: AMBER · Variances (${totalOverdue + nonCriticalDelayed} task(s) behind)`,
+    };
+  }
+  return {
+    level: 'green',
+    label: 'Schedule Status: GREEN · On Schedule',
+  };
+}
+
+function drawGanttDependencyLines(schedule, minStart, totalDays, timelineWidth) {
+  const svg = document.getElementById('gantt-dependency-layer');
+  if (!svg) return;
+
+  svg.innerHTML = '';
+  if (!schedule || schedule.length === 0 || !dependencies || dependencies.length === 0) return;
+
+  const rowHeight = 38;
+  const headerHeight = 44; // Matches sticky header height
+  const oneDayMs = 24 * 60 * 60 * 1000;
+
+  // Marker definitions
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  defs.innerHTML = `
+    <marker id="gantt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#94a3b8" />
+    </marker>
+    <marker id="gantt-arrow-critical" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#dc2626" />
+    </marker>
+  `;
+  svg.appendChild(defs);
+
+  // Map task IDs to schedule index and coordinates
+  const taskMap = new Map();
+  schedule.forEach((task, index) => {
+    const startOffsetDays = Math.round((task.start.getTime() - minStart.getTime()) / oneDayMs);
+    const durationDays = task.duration || 1;
+    const xStart = (startOffsetDays / totalDays) * timelineWidth;
+    const xEnd = ((startOffsetDays + durationDays) / totalDays) * timelineWidth;
+    const yCenter = headerHeight + index * rowHeight + rowHeight / 2;
+
+    taskMap.set(task.id, {
+      task,
+      index,
+      xStart,
+      xEnd,
+      yCenter,
+    });
+  });
+
+  dependencies.forEach((dep) => {
+    const fromInfo = taskMap.get(dep.from);
+    const toInfo = taskMap.get(dep.to);
+    if (!fromInfo || !toInfo) return;
+
+    const x1 = fromInfo.xEnd;
+    const y1 = fromInfo.yCenter;
+    const x2 = toInfo.xStart;
+    const y2 = toInfo.yCenter;
+    const isCritical = fromInfo.task.isCritical && toInfo.task.isCritical;
+
+    let pathD = '';
+    if (x2 >= x1 + 10) {
+      // Direct forward stepped connector
+      const midX = x1 + Math.min(16, (x2 - x1) / 2);
+      pathD = `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`;
+    } else {
+      // Loop around when successor starts near or before predecessor finish
+      const loopX = x1 + 10;
+      const stepY = y1 + (y2 > y1 ? 16 : -16);
+      pathD = `M ${x1} ${y1} L ${loopX} ${y1} L ${loopX} ${stepY} L ${x2 - 10} ${stepY} L ${x2 - 10} ${y2} L ${x2} ${y2}`;
+    }
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', pathD);
+    path.setAttribute('class', isCritical ? 'gantt-dep-line critical' : 'gantt-dep-line');
+    path.setAttribute('marker-end', isCritical ? 'url(#gantt-arrow-critical)' : 'url(#gantt-arrow)');
+    svg.appendChild(path);
+  });
 }
 
 function renderGanttView() {
   const tbody = document.querySelector('#gantt-view-table tbody');
-  tbody.innerHTML = '';
+  if (tbody) tbody.innerHTML = '';
 
-  const timelineScrollArea = document.getElementById(
-    'gantt-timeline-scroll-area'
-  );
+  const timelineScrollArea = document.getElementById('gantt-timeline-scroll-area');
   const timelineContent = document.getElementById('gantt-timeline-content');
-  const horizontalRoller = document.getElementById(
-    'gantt-horizontal-roller-input'
-  );
+  const horizontalRoller = document.getElementById('gantt-horizontal-roller-input');
+  const monthsRow = document.getElementById('gantt-timeline-months-row');
   const headerRow = document.getElementById('gantt-timeline-header-row');
-  const barsContainer = document.getElementById(
-    'gantt-timeline-bars-container'
-  );
+  const barsContainer = document.getElementById('gantt-timeline-bars-container');
   const statusDateMarker = document.getElementById('gantt-status-date-marker');
   const scheduleRAG = document.getElementById('gantt-schedule-rag');
-  headerRow.innerHTML = '';
-  barsContainer.innerHTML = '';
+  const svgDependencyLayer = document.getElementById('gantt-dependency-layer');
+
+  if (monthsRow) monthsRow.innerHTML = '';
+  if (headerRow) headerRow.innerHTML = '';
+  if (barsContainer) barsContainer.innerHTML = '';
+  if (svgDependencyLayer) svgDependencyLayer.innerHTML = '';
 
   if (stickyNotes.length === 0) {
     if (ganttEndDate) ganttEndDate.innerText = '—';
@@ -4424,33 +4591,151 @@ function renderGanttView() {
       horizontalRoller.max = '0';
       horizontalRoller.value = '0';
     }
-    tbody.innerHTML =
-      '<tr><td colspan="13" style="text-align: center; color: var(--text-muted); padding: 24px;">No tasks found. Add sticky notes to the Board first!</td></tr>';
+    if (tbody) {
+      tbody.innerHTML =
+        '<tr><td colspan="13" style="text-align: center; color: var(--text-muted); padding: 24px;">No tasks found. Add sticky notes to the Board first!</td></tr>';
+    }
     return;
   }
 
   computeGanttSchedule();
 
-  // Render WBS table
-  computedScheduleData.forEach((item) => {
+  const oneDayMs = 24 * 60 * 60 * 1000;
+
+  // 1. Determine baseline CPM Project Finish and Critical Path duration
+  const projectStart = new Date(Math.min(...computedScheduleData.map((d) => d.start.getTime())));
+  const projectFinish = new Date(Math.max(...computedScheduleData.map((d) => d.end.getTime())));
+  const projectDurationDays = Math.max(
+    1,
+    Math.round((projectFinish.getTime() - projectStart.getTime()) / oneDayMs) + 1
+  );
+
+  // Keep KPI cards strictly tied to the calculated schedule (do NOT overwrite with status date)
+  if (ganttEndDate) ganttEndDate.innerText = formatScheduleDate(projectFinish);
+  if (ganttCriticalPathDays) ganttCriticalPathDays.innerText = `${projectDurationDays} days`;
+
+  // 2. Parse Status Date and evaluate Project Schedule RAG
+  const statusDate = parseDateInput(ganttStatusDateInput?.value, projectStart);
+  const projectRAG = getOverallProjectRAG(computedScheduleData, statusDate);
+  if (scheduleRAG) {
+    scheduleRAG.className = `gantt-rag-badge ${projectRAG.level}`;
+    scheduleRAG.innerText = projectRAG.label;
+    scheduleRAG.title = `Calculated Finish: ${formatScheduleDate(projectFinish)} · Status Cutoff: ${formatScheduleDate(statusDate)}`;
+  }
+
+  // 3. Determine visual timeline display window (encompassing both project and status date)
+  let timelineMinStart = new Date(Math.min(projectStart.getTime(), statusDate.getTime()));
+  let timelineMaxEnd = new Date(Math.max(projectFinish.getTime(), statusDate.getTime()));
+  timelineMinStart.setHours(0, 0, 0, 0);
+  timelineMaxEnd.setHours(23, 59, 59, 999);
+
+  // Add a 2-day buffer at the end for visual breathing room
+  timelineMaxEnd = new Date(timelineMaxEnd.getTime() + 2 * oneDayMs);
+
+  const totalDays = Math.max(
+    1,
+    Math.round((timelineMaxEnd.getTime() - timelineMinStart.getTime()) / oneDayMs) + 1
+  );
+
+  const dayColumnWidth = 44;
+  const timelineWidth = Math.max(800, totalDays * dayColumnWidth);
+  if (timelineContent) timelineContent.style.width = `${timelineWidth}px`;
+
+  // 4. Setup Two-Tier Timeline Header
+  // Top tier: Grouped calendar months
+  if (monthsRow) {
+    monthsRow.style.gridTemplateColumns = `repeat(${totalDays}, 1fr)`;
+    let currentMonth = -1;
+    let currentYear = -1;
+    let monthStartIdx = 0;
+    let monthDayCount = 0;
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    for (let i = 0; i < totalDays; i++) {
+      const curDate = new Date(timelineMinStart.getTime() + i * oneDayMs);
+      const m = curDate.getMonth();
+      const y = curDate.getFullYear();
+
+      if (m !== currentMonth || y !== currentYear) {
+        if (monthDayCount > 0) {
+          const monthCell = document.createElement('div');
+          monthCell.className = 'gantt-month-cell';
+          monthCell.style.gridColumn = `${monthStartIdx + 1} / span ${monthDayCount}`;
+          monthCell.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+          monthsRow.appendChild(monthCell);
+        }
+        currentMonth = m;
+        currentYear = y;
+        monthStartIdx = i;
+        monthDayCount = 1;
+      } else {
+        monthDayCount++;
+      }
+    }
+    if (monthDayCount > 0) {
+      const monthCell = document.createElement('div');
+      monthCell.className = 'gantt-month-cell';
+      monthCell.style.gridColumn = `${monthStartIdx + 1} / span ${monthDayCount}`;
+      monthCell.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+      monthsRow.appendChild(monthCell);
+    }
+  }
+
+  // Bottom tier: Individual Day cells
+  if (headerRow) {
+    headerRow.style.gridTemplateColumns = `repeat(${totalDays}, 1fr)`;
+    for (let i = 0; i < totalDays; i++) {
+      const dayDate = new Date(timelineMinStart.getTime() + i * oneDayMs);
+      const dayCell = document.createElement('div');
+      dayCell.className = 'gantt-day-header-cell';
+      dayCell.innerText = `D${i + 1}`;
+      dayCell.title = `${dayDate.toLocaleDateString(undefined, { weekday: 'short' })}, ${formatScheduleDate(dayDate)}`;
+      headerRow.appendChild(dayCell);
+    }
+  }
+
+  // 5. Status Date vertical marker line
+  if (statusDateMarker) {
+    const statusOffsetDays = Math.round(
+      (statusDate.getTime() - timelineMinStart.getTime()) / oneDayMs
+    );
+    const statusDateLabel = statusDateMarker.querySelector(
+      '.gantt-status-date-label'
+    );
+    statusDateMarker.style.display = 'block';
+    statusDateMarker.style.left = `${(statusOffsetDays / totalDays) * 100}%`;
+    statusDateMarker.setAttribute(
+      'aria-label',
+      `Status date: ${formatScheduleDate(statusDate)}`
+    );
+    if (statusDateLabel) {
+      statusDateLabel.innerText = `Status Date · ${formatScheduleDate(statusDate)}`;
+    }
+  }
+
+  // 6. Render WBS Table & Timeline Bars in exact 1-to-1 row correspondence
+  computedScheduleData.forEach((item, index) => {
     const note =
       stickyNotes.find((n) => n.id === item.id) ||
       stickyNotes.find(
-        (candidate, index) => `T${(index + 1) * 10}` === item.code
+        (candidate, idx) => `T${(idx + 1) * 10}` === item.code
       );
 
+    const taskRAG = getScheduleRAG(item, statusDate);
+
+    // --- Table Row ---
     const tr = document.createElement('tr');
-    const taskStatusDate = parseDateInput(
-      ganttStatusDateInput?.value,
-      item.start
-    );
-    const taskRAG = getScheduleRAG(new Date(item.end), taskStatusDate);
+    tr.setAttribute('data-task-index', String(index));
+    tr.setAttribute('data-task-id', item.id);
 
     // 1. Task ID
     const tdCode = document.createElement('td');
     tdCode.innerHTML = `<span class="gantt-task-code">${item.code}</span>`;
 
-    // 2. WBS Name (Task Title)
+    // 2. WBS Name
     const tdTitle = document.createElement('td');
     const titleInput = document.createElement('input');
     titleInput.type = 'text';
@@ -4527,20 +4812,13 @@ function renderGanttView() {
     const durationInput = document.createElement('input');
     durationInput.type = 'text';
     durationInput.inputMode = 'numeric';
-    durationInput.className =
-      'gantt-cell-input gantt-duration-input text-right';
+    durationInput.className = 'gantt-cell-input gantt-duration-input text-right';
     durationInput.value = String(item.duration || 1);
-    durationInput.setAttribute(
-      'aria-label',
-      `Duration in days for ${item.code}`
-    );
+    durationInput.setAttribute('aria-label', `Duration in days for ${item.code}`);
     durationInput.title = 'Duration in days (1 or greater)';
     durationInput.addEventListener('change', () => {
       if (note) {
-        const val = Math.max(
-          1,
-          parseInt(parseFormattedNumber(durationInput.value)) || 1
-        );
+        const val = Math.max(1, parseInt(parseFormattedNumber(durationInput.value)) || 1);
         durationInput.value = String(val);
         note.duration = val;
         updateNoteBadge(note);
@@ -4559,7 +4837,7 @@ function renderGanttView() {
     });
     tdDuration.appendChild(durationInput);
 
-    // 5. Hours (Planned Hours)
+    // 5. Hours
     const tdHours = document.createElement('td');
     tdHours.className = 'text-right';
     const hoursInput = document.createElement('input');
@@ -4592,7 +4870,7 @@ function renderGanttView() {
     });
     tdHours.appendChild(hoursInput);
 
-    // 6. Cost (Planned Cost - formatted with comma thousand separator, e.g. 25,000)
+    // 6. Cost
     const tdCost = document.createElement('td');
     tdCost.className = 'text-right';
     const costInput = document.createElement('input');
@@ -4601,8 +4879,7 @@ function renderGanttView() {
     costInput.className = 'gantt-cell-input gantt-cost-input text-right';
     costInput.value = formatThousands(item.plannedCost);
     costInput.setAttribute('aria-label', `Planned cost for ${item.code}`);
-    costInput.title =
-      'Planned budget cost (numbers with comma thousand separator)';
+    costInput.title = 'Planned budget cost (numbers with comma thousand separator)';
     costInput.addEventListener('focus', () => {
       costInput.select();
     });
@@ -4636,8 +4913,7 @@ function renderGanttView() {
     predInput.className = 'gantt-cell-input gantt-predecessor-input';
     predInput.value = item.predecessors;
     predInput.setAttribute('aria-label', `Predecessors for ${item.code}`);
-    predInput.title =
-      'Enter task IDs separated by commas, for example T10FS, T20FS';
+    predInput.title = 'Enter task IDs separated by commas, for example T10FS, T20FS';
     predInput.addEventListener('change', () => {
       if (note) updateGanttPredecessors(note.id, predInput.value);
     });
@@ -4652,14 +4928,13 @@ function renderGanttView() {
     });
     tdPred.appendChild(predInput);
 
-    // 8. Act Hours (Actual Hours)
+    // 8. Act Hours
     const tdActHours = document.createElement('td');
     tdActHours.className = 'text-right';
     const actHoursInput = document.createElement('input');
     actHoursInput.type = 'text';
     actHoursInput.inputMode = 'decimal';
-    actHoursInput.className =
-      'gantt-cell-input gantt-acthours-input text-right';
+    actHoursInput.className = 'gantt-cell-input gantt-acthours-input text-right';
     actHoursInput.value = String(item.actualHours || 0);
     actHoursInput.placeholder = '0';
     actHoursInput.setAttribute('aria-label', `Actual hours for ${item.code}`);
@@ -4689,7 +4964,7 @@ function renderGanttView() {
     });
     tdActHours.appendChild(actHoursInput);
 
-    // 9. Act Cost (Actual Cost - formatted with comma thousand separator, e.g. 15,000)
+    // 9. Act Cost
     const tdActCost = document.createElement('td');
     tdActCost.className = 'text-right';
     const actCostInput = document.createElement('input');
@@ -4699,8 +4974,7 @@ function renderGanttView() {
     actCostInput.value = formatThousands(item.actualCost);
     actCostInput.placeholder = '0';
     actCostInput.setAttribute('aria-label', `Actual cost for ${item.code}`);
-    actCostInput.title =
-      'Actual cost spent (numbers with comma thousand separator)';
+    actCostInput.title = 'Actual cost spent (numbers with comma thousand separator)';
     actCostInput.addEventListener('focus', () => {
       actCostInput.select();
     });
@@ -4732,22 +5006,17 @@ function renderGanttView() {
     const progressInput = document.createElement('input');
     progressInput.type = 'text';
     progressInput.inputMode = 'decimal';
-    progressInput.className =
-      'gantt-cell-input gantt-progress-input text-right';
+    progressInput.className = 'gantt-cell-input gantt-progress-input text-right';
     progressInput.value = String(item.progress || 0);
     progressInput.placeholder = '0–100';
-    progressInput.setAttribute(
-      'aria-label',
-      `Progress percentage for ${item.code}`
-    );
+    progressInput.setAttribute('aria-label', `Progress percentage for ${item.code}`);
     progressInput.title = 'Progress percentage (0 to 100)';
     progressInput.addEventListener('focus', () => {
       progressInput.select();
     });
     progressInput.addEventListener('change', () => {
       if (note) {
-        let val = parseFormattedNumber(progressInput.value);
-        if (val > 100) val = 100;
+        let val = Math.min(100, Math.max(0, parseFormattedNumber(progressInput.value) || 0));
         note.progress = val;
         progressInput.value = String(val);
         autoSaveCurrentState();
@@ -4777,24 +5046,18 @@ function renderGanttView() {
     const tdEnd = document.createElement('td');
     tdEnd.innerText = formatScheduleDate(item.end);
     tdEnd.className = `gantt-date-cell gantt-date-${taskRAG.level}`;
-    tdEnd.title =
-      taskRAG.daysFromStatus <= 0
-        ? 'Planned end is on or before the Status Date'
-        : `Planned end is ${taskRAG.daysFromStatus} day(s) after the Status Date`;
+    tdEnd.title = taskRAG.statusText;
 
     // 13. Schedule RAG status
     const tdStatus = document.createElement('td');
     const statusBadge = document.createElement('span');
     statusBadge.className = `gantt-rag-badge ${taskRAG.level}`;
     statusBadge.innerText = taskRAG.label;
-    statusBadge.title = tdEnd.title;
-    statusBadge.setAttribute(
-      'aria-label',
-      `${item.code} schedule status: ${taskRAG.label}`
-    );
+    statusBadge.title = taskRAG.statusText;
+    statusBadge.setAttribute('aria-label', `${item.code} schedule status: ${taskRAG.label}`);
     tdStatus.appendChild(statusBadge);
 
-    // Append cells to row
+    // Assemble table row
     tr.appendChild(tdCode);
     tr.appendChild(tdTitle);
     tr.appendChild(tdLane);
@@ -4808,166 +5071,79 @@ function renderGanttView() {
     tr.appendChild(tdStart);
     tr.appendChild(tdEnd);
     tr.appendChild(tdStatus);
+    if (tbody) tbody.appendChild(tr);
 
-    tbody.appendChild(tr);
-  });
+    // --- Timeline Bar Row (1-to-1 Correspondence) ---
+    const barRow = document.createElement('div');
+    barRow.className = 'gantt-bar-row';
+    barRow.setAttribute('data-task-index', String(index));
+    barRow.setAttribute('data-task-id', item.id);
 
-  // Determine date bounds
-  let minStart = new Date(
-    Math.min(...computedScheduleData.map((d) => d.start.getTime()))
-  );
-  let maxEnd = new Date(
-    Math.max(...computedScheduleData.map((d) => d.end.getTime()))
-  );
-  const statusDate = parseDateInput(ganttStatusDateInput?.value, minStart);
-  const projectRAG = getScheduleRAG(maxEnd, statusDate);
-  if (scheduleRAG) {
-    scheduleRAG.className = `gantt-rag-badge ${projectRAG.level}`;
-    scheduleRAG.innerText =
-      projectRAG.daysFromStatus <= 0
-        ? 'Schedule Status: GREEN · On or before Status Date'
-        : `Schedule Status: ${projectRAG.label} · ${projectRAG.daysFromStatus} day(s) after Status Date`;
-    scheduleRAG.title = `Calculated end date ${formatScheduleDate(maxEnd)} compared with Status Date ${formatScheduleDate(statusDate)}`;
-  }
+    const wrapper = document.createElement('div');
+    wrapper.className = 'gantt-bar-wrapper';
 
-  // Keep the status date visible even when it is just before or after the
-  // current schedule, while preserving the same scale used by the bars.
-  if (statusDate < minStart) minStart = new Date(statusDate);
-  if (statusDate > maxEnd) maxEnd = new Date(statusDate);
-
-  const criticalPathDays = Math.max(
-    1,
-    Math.round(
-      (maxEnd.getTime() - minStart.getTime()) / (24 * 60 * 60 * 1000)
-    ) + 1
-  );
-  if (ganttEndDate) ganttEndDate.innerText = formatScheduleDate(maxEnd);
-  if (ganttCriticalPathDays)
-    ganttCriticalPathDays.innerText = `${criticalPathDays} days`;
-
-  minStart.setHours(0, 0, 0, 0);
-  maxEnd.setHours(23, 59, 59, 999);
-
-  const oneDayMs = 24 * 60 * 60 * 1000;
-  const totalDays = Math.max(
-    1,
-    Math.round((maxEnd.getTime() - minStart.getTime()) / oneDayMs) + 1
-  );
-
-  // Keep each day readable and let the window roller navigate long schedules.
-  const timelineWidth = Math.max(1, totalDays * 48);
-  if (timelineContent) timelineContent.style.width = `${timelineWidth}px`;
-
-  if (statusDateMarker) {
-    const statusOffsetDays = Math.round(
-      (statusDate.getTime() - minStart.getTime()) / oneDayMs
+    const startOffsetDays = Math.round(
+      (item.start.getTime() - timelineMinStart.getTime()) / oneDayMs
     );
-    const statusDateLabel = statusDateMarker.querySelector(
-      '.gantt-status-date-label'
-    );
-    statusDateMarker.style.display = 'block';
-    statusDateMarker.style.left = `${(statusOffsetDays / totalDays) * 100}%`;
-    statusDateMarker.setAttribute(
-      'aria-label',
-      `Status date: ${formatScheduleDate(statusDate)}`
-    );
-    if (statusDateLabel) {
-      statusDateLabel.innerText = `Status Date · ${formatScheduleDate(statusDate)}`;
-    }
-  }
+    const durationDays = item.duration || 1;
 
-  // Setup grid columns
-  headerRow.style.gridTemplateColumns = `repeat(${totalDays}, 1fr)`;
+    const bar = document.createElement('div');
+    const barThemeClass =
+      item.progress >= 100
+        ? 'completed'
+        : item.isCritical
+        ? 'critical'
+        : taskRAG.level;
 
-  for (let i = 0; i < totalDays; i++) {
-    const dayCell = document.createElement('div');
-    dayCell.innerText = `D${i + 1}`;
-    dayCell.title = formatScheduleDate(
-      new Date(minStart.getTime() + i * oneDayMs)
-    );
-    headerRow.appendChild(dayCell);
-  }
+    bar.className = `gantt-bar ${barThemeClass}`;
+    bar.style.left = `${(startOffsetDays / totalDays) * 100}%`;
+    bar.style.width = `${Math.max(0.6, (durationDays / totalDays) * 100)}%`;
 
-  // Render Gantt bars. Each Role/Lane group gets as many stacked rows as needed
-  // to avoid overlapping task bars.
-  const groupedSchedule = new Map();
-  computedScheduleData.forEach((item) => {
-    if (!groupedSchedule.has(item.laneKey)) {
-      groupedSchedule.set(item.laneKey, []);
-    }
-    groupedSchedule.get(item.laneKey).push(item);
-  });
+    const progressFill = document.createElement('div');
+    progressFill.className = 'gantt-bar-progress';
+    progressFill.style.width = `${Math.min(100, Math.max(0, item.progress || 0))}%`;
+    bar.appendChild(progressFill);
 
-  groupedSchedule.forEach((items) => {
-    // Sort items by start date
-    const sorted = [...items].sort(
-      (a, b) => a.start.getTime() - b.start.getTime()
-    );
-    const tracks = [];
+    const barLabel = document.createElement('span');
+    barLabel.className = 'gantt-bar-label';
+    barLabel.innerText = `${item.code}: ${item.title} (${durationDays}d · ${item.progress || 0}%)`;
+    bar.appendChild(barLabel);
 
-    sorted.forEach((item) => {
-      let placed = false;
-      for (let i = 0; i < tracks.length; i++) {
-        const last = tracks[i][tracks[i].length - 1];
+    bar.title = `${item.code}: ${item.title}\nRole: ${item.lane}\nDuration: ${durationDays} days (${formatScheduleDate(item.start)} to ${formatScheduleDate(item.end)})\nProgress: ${item.progress || 0}%\nTotal Float: ${item.float} days${item.isCritical ? ' (Critical Path)' : ''}\nPredecessors: ${item.predecessors}`;
 
-        const lastEnd = new Date(last.end);
-        lastEnd.setHours(23, 59, 59, 999);
-        const curStart = new Date(item.start);
-        curStart.setHours(0, 0, 0, 0);
+    wrapper.appendChild(bar);
+    barRow.appendChild(wrapper);
+    if (barsContainer) barsContainer.appendChild(barRow);
 
-        if (curStart.getTime() > lastEnd.getTime()) {
-          tracks[i].push(item);
-          placed = true;
-          break;
-        }
+    // Synchronized Row Hover
+    const syncHover = (isEntering) => {
+      if (isEntering) {
+        tr.classList.add('gantt-row-hover');
+        barRow.classList.add('gantt-row-hover');
+      } else {
+        tr.classList.remove('gantt-row-hover');
+        barRow.classList.remove('gantt-row-hover');
       }
-      if (!placed) {
-        tracks.push([item]);
-      }
-    });
+    };
 
-    // Render each track as a row
-    tracks.forEach((trackItems) => {
-      const row = document.createElement('div');
-      row.className = 'gantt-bar-row';
-      row.style.gridTemplateColumns = `repeat(${totalDays}, 1fr)`;
-
-      trackItems.forEach((item) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'gantt-bar-wrapper';
-        wrapper.style.gridColumn = `1 / span ${totalDays}`;
-
-        const startOffsetDays = Math.round(
-          (item.start.getTime() - minStart.getTime()) / oneDayMs
-        );
-        const durationDays = item.duration;
-
-        const bar = document.createElement('div');
-        const barRAG = getScheduleRAG(new Date(item.end), statusDate);
-        bar.className =
-          `gantt-bar ${barRAG.level}` + (item.isCritical ? ' critical' : '');
-        bar.style.left = `${(startOffsetDays / totalDays) * 100}%`;
-        bar.style.width = `${(durationDays / totalDays) * 100}%`;
-        bar.innerText = `${item.code}: ${item.title}`;
-        bar.title = `${item.title} (${durationDays} days: ${formatScheduleDate(item.start)} to ${formatScheduleDate(item.end)})`;
-
-        wrapper.appendChild(bar);
-        row.appendChild(wrapper);
-      });
-      barsContainer.appendChild(row);
-    });
+    tr.addEventListener('mouseenter', () => syncHover(true));
+    tr.addEventListener('mouseleave', () => syncHover(false));
+    barRow.addEventListener('mouseenter', () => syncHover(true));
+    barRow.addEventListener('mouseleave', () => syncHover(false));
   });
 
-  updateGanttHorizontalRoller(timelineScrollArea, horizontalRoller);
+  // 7. Draw SVG Dependency Connector Lines
+  drawGanttDependencyLines(computedScheduleData, timelineMinStart, totalDays, timelineWidth);
+
+  // 8. Update horizontal window roller
+  requestAnimationFrame(() => {
+    updateGanttHorizontalRoller(timelineScrollArea, horizontalRoller);
+  });
 }
 
 function updateGanttHorizontalRoller(scrollArea, roller) {
   if (!scrollArea || !roller) return;
-
-  const maxScroll = Math.max(
-    0,
-    scrollArea.scrollWidth - scrollArea.clientWidth
-  );
+  const maxScroll = Math.max(0, scrollArea.scrollWidth - scrollArea.clientWidth);
   roller.max = String(maxScroll);
   roller.value = String(Math.min(scrollArea.scrollLeft, maxScroll));
 }
@@ -4978,6 +5154,8 @@ const ganttTimelineScrollArea = document.getElementById(
 const ganttHorizontalRoller = document.getElementById(
   'gantt-horizontal-roller-input'
 );
+const ganttTableSection = document.querySelector('.gantt-table-section');
+
 if (ganttTimelineScrollArea && ganttHorizontalRoller) {
   ganttTimelineScrollArea.addEventListener('scroll', () => {
     ganttHorizontalRoller.value = String(ganttTimelineScrollArea.scrollLeft);
@@ -4987,6 +5165,25 @@ if (ganttTimelineScrollArea && ganttHorizontalRoller) {
   });
   window.addEventListener('resize', () => {
     updateGanttHorizontalRoller(ganttTimelineScrollArea, ganttHorizontalRoller);
+  });
+}
+
+// Synchronized two-way vertical scrolling between WBS Table and Gantt Timeline
+if (ganttTableSection && ganttTimelineScrollArea) {
+  let isSyncingGanttScroll = false;
+
+  ganttTableSection.addEventListener('scroll', () => {
+    if (isSyncingGanttScroll) return;
+    isSyncingGanttScroll = true;
+    ganttTimelineScrollArea.scrollTop = ganttTableSection.scrollTop;
+    isSyncingGanttScroll = false;
+  });
+
+  ganttTimelineScrollArea.addEventListener('scroll', () => {
+    if (isSyncingGanttScroll) return;
+    isSyncingGanttScroll = true;
+    ganttTableSection.scrollTop = ganttTimelineScrollArea.scrollTop;
+    isSyncingGanttScroll = false;
   });
 }
 
@@ -5012,15 +5209,18 @@ if (viewGanttBtn) {
   });
 }
 
-// CSV Export
+// CSV Export (Excel & Power BI compatible)
 document.getElementById('btn-export-csv-view').addEventListener('click', () => {
   if (computedScheduleData.length === 0) return;
 
   let csvContent = 'data:text/csv;charset=utf-8,';
   csvContent +=
-    'Task ID;Task Name;Lane/Role;Duration (Days);Planned Hours;Planned Cost;Predecessors;Act Hours;Act Cost;Progress %;Start Date;End Date\r\n';
+    'Task ID;Task Name;Lane/Role;Duration (Days);Planned Hours;Planned Cost;Predecessors;Act Hours;Act Cost;Progress %;Start Date;End Date;Total Float (Days);Critical Path;Schedule Status\r\n';
+
+  const statusDate = parseDateInput(ganttStatusDateInput?.value, new Date());
 
   computedScheduleData.forEach((item) => {
+    const taskRAG = getScheduleRAG(item, statusDate);
     const row = [
       item.code,
       `"${item.title.replace(/"/g, '""')}"`,
@@ -5034,6 +5234,9 @@ document.getElementById('btn-export-csv-view').addEventListener('click', () => {
       item.progress,
       formatScheduleDate(item.start),
       formatScheduleDate(item.end),
+      item.float,
+      item.isCritical ? 'Yes' : 'No',
+      taskRAG.label,
     ].join(';');
     csvContent += row + '\r\n';
   });

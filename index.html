@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#1e293b" />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="styles.css?v=2.2" />
+    <link rel="stylesheet" href="styles.css?v=2.3" />
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1087,12 +1087,21 @@
               <div class="gantt-visual-section">
                 <div class="gantt-timeline-scroll-area" id="gantt-timeline-scroll-area">
                   <div class="gantt-timeline-content" id="gantt-timeline-content">
-                    <div class="gantt-timeline-header-container">
+                    <div class="gantt-timeline-header-container" id="gantt-timeline-header-container">
+                      <div
+                        class="gantt-timeline-months-row"
+                        id="gantt-timeline-months-row"
+                      ></div>
                       <div
                         class="gantt-timeline-header-row"
                         id="gantt-timeline-header-row"
                       ></div>
                     </div>
+                    <svg
+                      class="gantt-dependency-layer"
+                      id="gantt-dependency-layer"
+                      aria-hidden="true"
+                    ></svg>
                     <div
                       class="gantt-timeline-bars-container"
                       id="gantt-timeline-bars-container"
@@ -2411,7 +2420,7 @@
     <div id="canvas-tooltip" class="canvas-tooltip" style="display: none"></div>
     <div id="app-tooltip" class="app-tooltip" role="tooltip" aria-hidden="true"></div>
 
-    <script src="app.js?v=2.2"></script>
+    <script src="app.js?v=2.3"></script>
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then((registrations) => {
@@ -2420,7 +2429,7 @@
           }
         });
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.2').catch(() => {});
+          navigator.serviceWorker.register('./sw.js?v=2.3').catch(() => {});
         });
       }
     </script>
