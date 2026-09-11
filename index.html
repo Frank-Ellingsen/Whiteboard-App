@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#1e293b" />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="styles.css?v=2.4" />
+    <link rel="stylesheet" href="styles.css?v=2.5" />
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1527,10 +1527,10 @@
           <span style="font-size: 1.25rem" aria-hidden="true">📖</span>
           <div>
             <h3 id="user-guide-title" style="margin: 0; font-size: 1rem">
-              Project Controls Whiteboard — User Guide & Workflow
+              Project Controls Whiteboard — User Guide &amp; Reference
             </h3>
             <span style="font-size: 0.72rem; color: var(--text-muted)">
-              End-to-End Guide for Project Controllers, PMs & Planners
+              Interactive Manual &amp; Reference for Project Controllers, PMs &amp; Planners
             </span>
           </div>
         </div>
@@ -1563,12 +1563,12 @@
         <a href="#guide-brainstorm" class="guide-nav-link">📝 Sticky Notes</a>
         <a href="#guide-dependencies" class="guide-nav-link">🔗 Dependencies</a>
         <a href="#guide-swimlanes" class="guide-nav-link">🏊 Swimlanes</a>
-        <a href="#guide-gantt" class="guide-nav-link">📊 Gantt & CPM</a>
+        <a href="#guide-gantt" class="guide-nav-link">📊 Gantt &amp; CPM</a>
         <a href="#guide-risk" class="guide-nav-link">⚠️ 5×5 Risk Matrix</a>
-        <a href="#guide-evm" class="guide-nav-link">📈 EVM & S-Curve</a>
+        <a href="#guide-evm" class="guide-nav-link">📈 EVM &amp; S-Curve</a>
         <a href="#guide-drawing" class="guide-nav-link">🎨 Drawing Tools</a>
         <a href="#guide-shortcuts" class="guide-nav-link">⌨️ Shortcuts</a>
-        <a href="#guide-export" class="guide-nav-link">💾 Excel & Power BI</a>
+        <a href="#guide-export" class="guide-nav-link">💾 Projects &amp; Export</a>
       </nav>
 
       <div class="guide-dialog-content">
@@ -1578,7 +1578,7 @@
             <span>🔄</span> Brainstorm to Gantt: The Automated Workflow
           </h4>
           <p>
-            The <strong>Project Controls Whiteboard</strong> bridges the gap between fast-paced, creative brainstorming sessions and rigorous, quantitative project controls (Critical Path Method scheduling, 5×5 risk ranking, and Earned Value Management). Instead of manually transcribing post-it notes into scheduling software, the whiteboard acts as a live, computational schedule engine.
+            The <strong>Project Controls Whiteboard</strong> unites collaborative, rapid whiteboard brainstorming with rigorous, mathematical project controls. Work packages created during ideation automatically feed a real-time computational schedule engine — executing Critical Path Method (CPM) algorithms, ISO/PMI 5×5 risk ranking, cross-functional role swimlanes, and Earned Value Management (EVM) S-Curves without manual transcription.
           </p>
 
           <!-- Infographic Illustration -->
@@ -1601,7 +1601,7 @@
                 <span class="guide-badge blue">Step 1</span> Rapidly Brainstorm Ideas
               </h5>
               <p>
-                Use the top quick-entry bar (<code>Write task &amp; Enter</code>) or press <kbd class="guide-kbd">N</kbd> to populate the board with digital sticky notes. Capture work packages, scope elements, and milestones on the fly.
+                Use the top quick-entry bar (<code>Write task &amp; Enter</code>), press <kbd class="guide-kbd">N</kbd>, or click the Sticky Note tool in the left sidebar to drop digital post-its onto the board. Capture scope elements, deliverables, and milestones effortlessly.
               </p>
             </div>
 
@@ -1610,7 +1610,7 @@
                 <span class="guide-badge slate">Step 2</span> Link Tasks with Shift-Drag
               </h5>
               <p>
-                Hold <kbd class="guide-kbd">Shift</kbd> and drag from one note to another to draw dependency arrows. The engine automatically creates directional Finish-to-Start (FS) predecessors for CPM scheduling.
+                Hold <kbd class="guide-kbd">Shift</kbd> and drag from a predecessor note to a successor note to draw dependency arrows. The engine constructs a directional acyclic network graph calculating Finish-to-Start (FS) logic and predecessor constraints ($ES = \max(EF_{\text{predecessors}})$).
               </p>
             </div>
 
@@ -1619,7 +1619,7 @@
                 <span class="guide-badge green">Step 3</span> Auto-Organize into Swimlanes
               </h5>
               <p>
-                Right-click notes to assign disciplines/roles (e.g. <em>Engineering, Procurement, Fabrication, Commissioning</em>), duration, hours, costs (BAC), and risk scores. In the <strong>🏊 Swimlanes</strong> tab, click <strong>Apply &amp; Arrange Canvas Board</strong> to auto-align notes into clean sequential lanes.
+                Right-click notes to assign disciplines (e.g. <em>Venue &amp; Logistics, Catering, Attire, Photo &amp; Entertainment</em> or <em>Engineering, Procurement, Fabrication</em>), durations, hours, budgets (BAC), and risk scores. In the <strong>🏊 Swimlanes</strong> tab, click <strong>Apply &amp; Arrange Canvas Board</strong> to auto-align all notes into clean sequential lanes.
               </p>
             </div>
 
@@ -1628,7 +1628,7 @@
                 <span class="guide-badge red">Step 4</span> Instant Gantt, Risk &amp; EVM
               </h5>
               <p>
-                Automatically calculate Task IDs, predecessors, critical path days, and early start/end dates in the <strong>📊 Gantt</strong> view. Track risks in the <strong>⚠️ Risk Matrix</strong> and view real-time CPI/SPI with direct-labeled S-Curves in <strong>📈 EVM</strong>. Export to CSV for Excel and Power BI with one click.
+                Automatically calculate early/late dates, total float, and critical path days in the <strong>📊 Gantt</strong> view. Track risks in the <strong>⚠️ Risk Matrix</strong> and view real-time CPI/SPI with direct-labeled S-Curves in <strong>📈 EVM</strong>. Export to CSV for Excel and Power BI with one click.
               </p>
             </div>
           </div>
@@ -1645,8 +1645,14 @@
 
           <div class="guide-callout tip">
             <p>
-              <strong>Pro-Tip:</strong> Press <kbd class="guide-kbd">N</kbd> and click anywhere on the canvas to place a note, or type task titles in the top bar's <strong>"Write task &amp; Enter"</strong> field and press <kbd class="guide-kbd">Enter</kbd> to rapidly drop notes in succession.
+              <strong>Pro-Tips for Interacting with Notes:</strong>
             </p>
+            <ul style="margin-left: 18px; margin-top: 4px; line-height: 1.5; font-size: 0.85rem;">
+              <li><strong>Quick Entry:</strong> Type task titles into the top bar's <strong>"Write task &amp; Enter"</strong> field and press <kbd class="guide-kbd">Enter</kbd> to rapidly drop notes in succession.</li>
+              <li><strong>Inline Title Editing:</strong> Double-click any note on the canvas to immediately edit its title.</li>
+              <li><strong>Full Work Package Modal:</strong> Right-click any note to open its detailed property editor (Role, Duration, Hours, BAC, Risk Probability &amp; Impact, Actuals, Progress %).</li>
+              <li><strong>Resize:</strong> Drag the bottom-right corner of any note to expand or compact its display area.</li>
+            </ul>
           </div>
 
           <h5>Sticky Note Parameters &amp; Controlling Fields</h5>
@@ -1662,12 +1668,12 @@
               <tr>
                 <td><strong>Swimlane / Role</strong></td>
                 <td>Discipline, department, or lane</td>
-                <td>Groups tasks into swimlanes (e.g. <em>PM, Engineering, Procurement, Production, Quality</em>)</td>
+                <td>Groups tasks into swimlanes (e.g. <em>Venue &amp; Logistics, Catering, Attire, Photo &amp; Music</em> or <em>Engineering, Procurement, Fabrication, Quality</em>)</td>
               </tr>
               <tr>
                 <td><strong>Duration (Days)</strong></td>
                 <td>Planned calendar work days</td>
-                <td>Used by the CPM engine to compute early/late finish dates and critical path length</td>
+                <td>Used by the CPM engine to compute early/late finish dates, total float, and critical path length</td>
               </tr>
               <tr>
                 <td><strong>Planned Hours</strong></td>
@@ -1682,12 +1688,22 @@
               <tr>
                 <td><strong>Resource / Responsible</strong></td>
                 <td>Assigned person, team, or vendor</td>
-                <td>Appears in the Risk Register and WBS schedule assignments</td>
+                <td>Appears in the Risk Register and WBS schedule assignments for accountability</td>
               </tr>
               <tr>
                 <td><strong>Risk &amp; Impact (1–5)</strong></td>
                 <td>Probability (1–5) × Impact (1–5)</td>
                 <td>Calculates Weighted Risk Score (1–25) and positions note in the 5×5 Risk Matrix</td>
+              </tr>
+              <tr>
+                <td><strong>Actual Hours &amp; Cost</strong></td>
+                <td>Incurred hours and actual cost (AC)</td>
+                <td>Feeds Cost Variance ($CV = EV - AC$) and Cost Performance Index ($CPI = EV / AC$)</td>
+              </tr>
+              <tr>
+                <td><strong>Progress %</strong></td>
+                <td>Percent complete (0%–100%)</td>
+                <td>Calculates Earned Value ($EV = BAC \times \text{Progress } \%$) and drives the S-Curve</td>
               </tr>
             </tbody>
           </table>
@@ -1698,7 +1714,7 @@
           </p>
           <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
             <li><span class="guide-badge slate">Slate</span> — General task, default text, or administrative milestone.</li>
-            <li><span class="guide-badge blue">Blue</span> — Planned baseline scope and engineering packages.</li>
+            <li><span class="guide-badge blue">Blue</span> — Planned baseline scope, engineering, and logistics packages.</li>
             <li><span class="guide-badge green">Green</span> — Completed milestones, favorable performance, or actuals.</li>
             <li><span class="guide-badge red">Red</span> — Critical path tasks, high risk ($Score \ge 15$), or unfavorable cost/schedule variances.</li>
             <li><span class="guide-badge yellow">Yellow</span> — Medium risk ($Score \ge 8$), warnings, or items under review.</li>
@@ -1721,7 +1737,7 @@
           </ol>
           <div class="guide-callout">
             <p>
-              <strong>Multi-Predecessor Logic:</strong> When a task has multiple predecessors, its start date is automatically constrained by the predecessor with the latest finish date ($ES = \max(EF_{\text{predecessors}})$), strictly adhering to standard Critical Path Method (CPM) algorithms.
+              <strong>Multi-Predecessor Logic:</strong> When a task has multiple predecessors, its start date is automatically constrained by the predecessor with the latest finish date ($ES = \max(EF_{\text{predecessors}})$), strictly adhering to standard Critical Path Method (CPM) algorithms. Arrows dynamically re-route when you move notes on the board.
             </p>
           </div>
         </section>
@@ -1746,8 +1762,9 @@
             </figcaption>
           </figure>
           <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155; margin-top: 10px;">
-            <li><strong>Cross-Functional Columns:</strong> Tasks are grouped vertically by role/discipline (e.g. <em>Legal, Buy Shed, Clear Garden, Foundations, Install Shed</em>).</li>
-            <li><strong>Decision Diamonds:</strong> High-risk tasks or questions (containing '?', 'review', 'permission', etc.) are automatically formatted as decision gates with YES/NO branch labels.</li>
+            <li><strong>Cross-Functional Columns:</strong> Tasks are grouped vertically by role/discipline (e.g. <em>Venue &amp; Logistics, Ceremony &amp; Reception, Catering &amp; Cake, Attire &amp; Rings, Photo &amp; Entertainment</em> or engineering packages).</li>
+            <li><strong>Decision Diamonds:</strong> High-risk tasks or questions (containing '?', 'review', 'permit', 'approval', etc.) are automatically formatted as decision gates with YES/NO branch labels.</li>
+            <li><strong>Apply &amp; Arrange Canvas Board:</strong> Click this button to translate the clean vertical swimlane alignment directly onto the whiteboard canvas, neatly organizing scattered notes into structured functional rows.</li>
             <li><strong>Fit Height &amp; Zoom:</strong> Use <strong>Fit Height</strong> or the <strong>+ / −</strong> zoom controls to scale the entire end-to-end process onto your screen.</li>
             <li><strong>Export Flowchart:</strong> Download high-resolution PNG images directly for management decks and project charter reviews.</li>
           </ul>
@@ -1765,13 +1782,13 @@
             <div class="guide-step-card" style="border-left-color: var(--color-blue)">
               <h5>WBS Schedule Table (Left Pane)</h5>
               <p>
-                A comprehensive 12-column table displaying <strong>Task ID</strong>, <strong>WBS Name</strong>, <strong>Role</strong>, <strong>Duration</strong>, <strong>Planned Hours</strong>, <strong>Cost</strong>, <strong>Predecessors</strong>, <strong>Actual Hours</strong>, <strong>Actual Cost</strong>, <strong>Progress %</strong>, <strong>Start Date</strong>, and <strong>End Date</strong>. You can edit actuals and progress inline!
+                A comprehensive 12-column table displaying <strong>Task ID</strong>, <strong>WBS Name</strong>, <strong>Role</strong>, <strong>Duration</strong>, <strong>Planned Hours</strong>, <strong>Cost</strong>, <strong>Predecessors</strong>, <strong>Actual Hours</strong>, <strong>Actual Cost</strong>, <strong>Progress %</strong>, <strong>Start Date</strong>, and <strong>End Date</strong>. You can edit actuals and progress inline to instantly update EVM calculations!
               </p>
             </div>
             <div class="guide-step-card" style="border-left-color: var(--color-green)">
               <h5>Interactive Gantt Timeline (Right Pane)</h5>
               <p>
-                A visual timeline displaying color-coded schedule bars, a red vertical <strong>Status Date marker</strong>, and a dedicated <strong>horizontal window roller</strong> slider to navigate wide project timelines smoothly.
+                A visual timeline displaying color-coded schedule bars, Critical Path highlighting, a red vertical <strong>Status Date marker</strong>, and a dedicated <strong>horizontal window roller</strong> slider to navigate wide project timelines smoothly.
               </p>
             </div>
           </div>
@@ -1804,7 +1821,7 @@
             <li><span class="guide-badge red">High Risk (Score 15–25)</span> — Muted red background. Critical project risk requiring immediate escalation and contingency budget.</li>
           </ul>
           <p>
-            Below the matrix, the <strong>Risk Register table</strong> automatically ranks all work packages in descending order of risk exposure.
+            Below the matrix, the <strong>Risk Register table</strong> automatically ranks all work packages in descending order of risk exposure. Clicking any cell in the 5×5 matrix filters the table to highlight matching risks.
           </p>
         </section>
 
@@ -1901,11 +1918,12 @@
           </p>
           <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
             <li><strong>Select &amp; Move (<kbd class="guide-kbd">S</kbd>):</strong> Click and drag vector shapes or select elements on the canvas.</li>
-            <li><strong>Pen (<kbd class="guide-kbd">P</kbd>):</strong> Crisp freehand pen drawing with responsive stroke width.</li>
+            <li><strong>Pen (<kbd class="guide-kbd">P</kbd>):</strong> Crisp freehand pen drawing with responsive stroke width (2px–20px).</li>
             <li><strong>Highlighter (<kbd class="guide-kbd">H</kbd>):</strong> Semi-transparent marker for highlighting schedule paths, areas, or notes.</li>
-            <li><strong>Eraser (<kbd class="guide-kbd">E</kbd>) &amp; Area Eraser:</strong> Erase individual strokes or drag a bounding box to delete all enclosed items.</li>
+            <li><strong>Eraser (<kbd class="guide-kbd">E</kbd>):</strong> Erase individual strokes or shapes under the cursor.</li>
             <li><strong>Shapes:</strong> Line (<kbd class="guide-kbd">L</kbd>), Rectangle (<kbd class="guide-kbd">R</kbd>), Circle (<kbd class="guide-kbd">C</kbd>), Arrow (<kbd class="guide-kbd">A</kbd>), Diamond (<kbd class="guide-kbd">D</kbd>), Triangle (<kbd class="guide-kbd">T</kbd>).</li>
             <li><strong>In-Shape Text:</strong> Double-click any geometric shape on the canvas to type inline labels and milestones!</li>
+            <li><strong>Clear Canvas:</strong> Click <strong>Clear Canvas</strong> at the very top of the left sidebar to wipe all strokes and notes from the board with confirmation.</li>
           </ul>
         </section>
 
@@ -1926,7 +1944,7 @@
               <tr>
                 <td><kbd class="guide-kbd">S</kbd></td>
                 <td>Select Tool</td>
-                <td>Select and move vector elements</td>
+                <td>Select and move vector elements and notes</td>
               </tr>
               <tr>
                 <td><kbd class="guide-kbd">P</kbd></td>
@@ -1976,7 +1994,7 @@
               <tr>
                 <td><kbd class="guide-kbd">N</kbd></td>
                 <td>Add Sticky Note</td>
-                <td>Place a new sticky note on canvas</td>
+                <td>Place a new parametric sticky note on canvas</td>
               </tr>
               <tr>
                 <td><kbd class="guide-kbd">Shift + Drag</kbd></td>
@@ -1989,9 +2007,14 @@
                 <td>Undo previous canvas or note action</td>
               </tr>
               <tr>
-                <td><kbd class="guide-kbd">Ctrl + Y</kbd></td>
+                <td><kbd class="guide-kbd">Ctrl + Y</kbd> / <kbd class="guide-kbd">Ctrl + Shift + Z</kbd></td>
                 <td>Redo</td>
                 <td>Redo previously undone action</td>
+              </tr>
+              <tr>
+                <td><kbd class="guide-kbd">Delete</kbd> / <kbd class="guide-kbd">Backspace</kbd></td>
+                <td>Delete Selection</td>
+                <td>Delete selected stroke, shape, or note</td>
               </tr>
               <tr>
                 <td><kbd class="guide-kbd">?</kbd> or <kbd class="guide-kbd">F1</kbd></td>
@@ -2010,16 +2033,30 @@
         <!-- Section 10: File Management & Interoperability -->
         <section id="guide-export" class="guide-section">
           <h4>
-            <span>💾</span> File Management, Microsoft Excel &amp; Power BI Export
+            <span>💾</span> Saved Projects, Local Storage &amp; Business Intelligence Export
           </h4>
           <p>
-            The Project Controls Whiteboard operates <strong>100% local-first</strong>. All data remains on your machine with zero cloud tracking:
+            The Project Controls Whiteboard operates <strong>100% local-first</strong>. All project data remains strictly in your browser with zero external server dependencies:
           </p>
           <ul style="margin-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #334155">
-            <li><strong>Save Board (JSON):</strong> Type a project name (e.g. <code>New Garden Shed</code>) and click <strong>Save Board</strong> to download the complete vector strokes, notes, dependencies, and EVM data as a persistent <code>.json</code> file.</li>
-            <li><strong>Open File:</strong> Click <strong>Open File</strong> to load any saved project, such as the bundled sample project <code>samples/New Garden Shed.json</code>.</li>
-            <li><strong>Export PNG:</strong> Export a high-resolution, print-ready image of your whiteboard sketches and notes for executive presentations.</li>
-            <li><strong>Export CSV (Excel):</strong> In the Gantt view, click <strong>Export CSV (Excel)</strong> to generate a semicolon-delimited CSV dataset configured for direct import into Microsoft Excel Power Query and Power BI DAX models.</li>
+            <li>
+              <strong>Saved Projects &amp; Templates (<code>📁 Saved Projects</code>):</strong> Click the <strong>Saved Projects</strong> button in the top bar to open the project management modal. Here you can:
+              <ul style="margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                <li><strong>Open Local Saves:</strong> Switch between project snapshots saved directly in your browser's local storage.</li>
+                <li><strong>One-Click Template Library:</strong> Instantly load pre-built demo projects:
+                  <ul style="margin-left: 18px; margin-top: 2px;">
+                    <li>💍 <strong>Wedding Planning Project</strong> (Default active project): Comprehensive event management with Ceremony, Venue &amp; Logistics, Catering &amp; Cake, Attire &amp; Rings, Photo &amp; Entertainment, and budget baselines.</li>
+                    <li>🏡 <strong>New Garden Shed Project</strong>: Residential construction, DIY foundation, procurement, structural assembly, and painting.</li>
+                    <li>⚓ <strong>Patrol Vessel Overhaul</strong>: Maritime &amp; naval defense refit (drydock hull survey, propulsion overhaul, combat sensor integration, sea trials, and EAC forecasting).</li>
+                  </ul>
+                </li>
+                <li><strong>Import JSON Project:</strong> Upload any exported <code>.json</code> project file from your computer.</li>
+              </ul>
+            </li>
+            <li><strong>Save Board (<code>💾 Save Board</code>):</strong> Saves your current board snapshot to local browser storage and downloads a standalone, persistent <code>.json</code> backup file containing all strokes, shapes, WBS work packages, dependencies, and actuals.</li>
+            <li><strong>Wedding Plan Reset (<code>💍 Wedding Plan</code>):</strong> Click the quick-access button in the top bar to instantly reload the default Wedding Planning baseline anytime.</li>
+            <li><strong>Export CSV (Excel &amp; Power BI):</strong> In the Gantt view, click <strong>Export CSV (Excel)</strong> to generate a clean, semicolon-delimited CSV dataset formatted with UTF-8 BOM encoding. Designed for frictionless import into Microsoft Excel Power Query, Power BI DAX models, or DuckDB analytical queries.</li>
+            <li><strong>Export PNG (<code>📷 Export PNG</code>):</strong> Export a crisp, print-ready image of your whiteboard sketches, notes, and diagrams for executive presentations and project charter decks.</li>
           </ul>
         </section>
       </div>
@@ -2458,16 +2495,21 @@
     <div id="canvas-tooltip" class="canvas-tooltip" style="display: none"></div>
     <div id="app-tooltip" class="app-tooltip" role="tooltip" aria-hidden="true"></div>
 
-    <script src="app.js?v=2.4"></script>
+    <script src="app.js?v=2.5"></script>
     <script>
+      // Clear stale service worker caches to ensure immediate updates
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then((registrations) => {
           for (let reg of registrations) {
-            reg.update();
+            reg.unregister();
           }
         });
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.4').catch(() => {});
+      }
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          for (let key of keys) {
+            caches.delete(key);
+          }
         });
       }
     </script>
